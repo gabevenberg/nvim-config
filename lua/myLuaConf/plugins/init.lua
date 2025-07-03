@@ -1,6 +1,6 @@
 local colorschemeName = nixCats('colorscheme')
 if not require('nixCatsUtils').isNixCats then
-  colorschemeName = 'onedark'
+  colorschemeName = 'gruvbox'
 end
 -- Could I lazy load on colorscheme with lze?
 -- sure. But I was going to call vim.cmd.colorscheme() during startup anyway
@@ -16,12 +16,12 @@ if ok then
   })
   vim.notify = notify
   vim.keymap.set("n", "<Esc>", function()
-      notify.dismiss({ silent = true, })
+    notify.dismiss({ silent = true, })
   end, { desc = "dismiss notify popup and clear hlsearch" })
 end
 
 -- NOTE: you can check if you included the category with the thing wherever you want.
-if nixCats('general.extra') then
+if nixCats('always') then
   -- I didnt want to bother with lazy loading this.
   -- I could put it in opt and put it in a spec anyway
   -- and then not set any handlers and it would load at startup,
@@ -74,47 +74,29 @@ require('lze').load {
     -- it is defined in luaUtils template in lua/nixCatsUtils/lzUtils.lua
     -- you could replace this with enabled = nixCats('cat.name') == true
     -- if you didnt care to set a different default for when not using nix than the default you already set
-    for_cat = 'general.markdown',
+    for_cat = 'markdown',
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle", },
     ft = "markdown",
     keys = {
-      {"<leader>mp", "<cmd>MarkdownPreview <CR>", mode = {"n"}, noremap = true, desc = "markdown preview"},
-      {"<leader>ms", "<cmd>MarkdownPreviewStop <CR>", mode = {"n"}, noremap = true, desc = "markdown preview stop"},
-      {"<leader>mt", "<cmd>MarkdownPreviewToggle <CR>", mode = {"n"}, noremap = true, desc = "markdown preview toggle"},
+      { "<leader>mp", "<cmd>MarkdownPreview <CR>",       mode = { "n" }, noremap = true, desc = "markdown preview" },
+      { "<leader>ms", "<cmd>MarkdownPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "markdown preview stop" },
+      { "<leader>mt", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown preview toggle" },
     },
     before = function(plugin)
       vim.g.mkdp_auto_close = 0
     end,
   },
   {
-    "undotree",
-    for_cat = 'general.extra',
-    cmd = { "UndotreeToggle", "UndotreeHide", "UndotreeShow", "UndotreeFocus", "UndotreePersistUndo", },
-    keys = { { "<leader>U", "<cmd>UndotreeToggle<CR>", mode = { "n" }, desc = "Undo Tree" }, },
-    before = function(_)
-      vim.g.undotree_WindowLayout = 1
-      vim.g.undotree_SplitWidth = 40
-    end,
-  },
-  {
-    "comment.nvim",
-    for_cat = 'general.extra',
+    "leap.nvim",
+    for_cat = 'always',
     event = "DeferredUIEnter",
     after = function(plugin)
-      require('Comment').setup()
-    end,
-  },
-  {
-    "indent-blankline.nvim",
-    for_cat = 'general.extra',
-    event = "DeferredUIEnter",
-    after = function(plugin)
-      require("ibl").setup()
+      require('leap').set_default_mappings()
     end,
   },
   {
     "nvim-surround",
-    for_cat = 'general.always',
+    for_cat = 'always',
     event = "DeferredUIEnter",
     -- keys = "",
     after = function(plugin)
@@ -122,8 +104,15 @@ require('lze').load {
     end,
   },
   {
+    "marks.nvim",
+    for_cat = "always",
+    after = function(plugin)
+      require('marks').setup({})
+    end
+  },
+  {
     "vim-startuptime",
-    for_cat = 'general.extra',
+    for_cat = 'extra',
     cmd = { "StartupTime" },
     before = function(_)
       vim.g.startuptime_event_width = 0
@@ -133,77 +122,92 @@ require('lze').load {
   },
   {
     "fidget.nvim",
-    for_cat = 'general.extra',
+    for_cat = 'always',
     event = "DeferredUIEnter",
     -- keys = "",
     after = function(plugin)
       require('fidget').setup({})
     end,
   },
-  -- {
-  --   "hlargs",
-  --   for_cat = 'general.extra',
-  --   event = "DeferredUIEnter",
-  --   -- keys = "",
-  --   dep_of = { "nvim-lspconfig" },
-  --   after = function(plugin)
-  --     require('hlargs').setup {
-  --       color = '#32a88f',
-  --     }
-  --     vim.cmd([[hi clear @lsp.type.parameter]])
-  --     vim.cmd([[hi link @lsp.type.parameter Hlargs]])
-  --   end,
-  -- },
+  {
+    "toggleterm.nvim",
+    for_cat = "always",
+    after = function(plugin)
+      require("toggleterm").setup({
+        direction = "horizontal",
+        insert_mappings = false,
+        open_mapping = [[<c-\>]],
+        terminal_mappings = false,
+      })
+
+      local Terminal = require("toggleterm.terminal").Terminal
+      Floatingterm = Terminal:new({
+        hidden = true,
+        direction = "float",
+      })
+
+      vim.keymap.set(
+        "n",
+        "<leader>s",
+        function()
+          Floatingterm:toggle()
+        end,
+        { desc = "toggle [S]cratch terminal", }
+      )
+    end
+  },
   {
     "lualine.nvim",
-    for_cat = 'general.always',
+    for_cat = 'always',
     -- cmd = { "" },
     event = "DeferredUIEnter",
     -- ft = "",
     -- keys = "",
     -- colorscheme = "",
-    after = function (plugin)
-
+    after = function(plugin)
       require('lualine').setup({
         options = {
-          icons_enabled = false,
-          theme = colorschemeName,
-          component_separators = '|',
-          section_separators = '',
-        },
-        sections = {
-          lualine_c = {
-            {
-              'filename', path = 1, status = true,
-            },
-          },
+          alwaysDivideMiddle = true,
+          icons_enabled = true,
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
         },
         inactive_sections = {
-          lualine_b = {
-            {
-              'filename', path = 3, status = true,
-            },
-          },
-          lualine_x = {'filetype'},
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { "filename" },
+          lualine_x = { "filetype" },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        sections = {
+          lualine_a = { "mode" },
+          lualine_b = { "branch", "diff", "diagnostics" },
+          lualine_c = { { "filename", path = 1 } },
+          lualine_x = { "encoding", "fileformat", "filetype" },
+          lualine_y = { "progress" },
+          lualine_z = { "location" },
         },
         tabline = {
-          lualine_a = { 'buffers' },
-          -- if you use lualine-lsp-progress, I have mine here instead of fidget
-          -- lualine_b = { 'lsp_progress', },
-          lualine_z = { 'tabs' }
+          lualine_a = { { "buffers", mode = 4 } },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { { "tabs", mode = 2 } }
         },
       })
     end,
   },
   {
     "gitsigns.nvim",
-    for_cat = 'general.always',
+    for_cat = 'always',
     event = "DeferredUIEnter",
     -- cmd = { "" },
     -- ft = "",
     -- keys = "",
     -- colorscheme = "",
-    after = function (plugin)
+    after = function(plugin)
       require('gitsigns').setup({
         -- See `:help gitsigns.txt`
         signs = {
@@ -281,35 +285,80 @@ require('lze').load {
   },
   {
     "which-key.nvim",
-    for_cat = 'general.extra',
-    -- cmd = { "" },
-    event = "DeferredUIEnter",
-    -- ft = "",
-    -- keys = "",
-    -- colorscheme = "",
-    after = function (plugin)
+    for_cat = 'always',
+    after = function(plugin)
       require('which-key').setup({
       })
       require('which-key').add {
-        { "<leader><leader>", group = "buffer commands" },
-        { "<leader><leader>_", hidden = true },
-        { "<leader>c", group = "[c]ode" },
-        { "<leader>c_", hidden = true },
-        { "<leader>d", group = "[d]ocument" },
-        { "<leader>d_", hidden = true },
         { "<leader>g", group = "[g]it" },
-        { "<leader>g_", hidden = true },
+        { "<leader>gt", group = "[t]oggle" },
         { "<leader>m", group = "[m]arkdown" },
-        { "<leader>m_", hidden = true },
-        { "<leader>r", group = "[r]ename" },
-        { "<leader>r_", hidden = true },
-        { "<leader>s", group = "[s]earch" },
-        { "<leader>s_", hidden = true },
-        { "<leader>t", group = "[t]oggles" },
-        { "<leader>t_", hidden = true },
-        { "<leader>w", group = "[w]orkspace" },
-        { "<leader>w_", hidden = true },
+        { "<leader>f", group = "[f]ind" },
+        { "<leader>t", group = "[t]ree" },
+        { "<leader>c", group = "[c]heck" },
+        { "<leader>l", group = "[l]sp" },
+        { "<leader>lw", group = "[l]sp [w]orkspace" },
       }
     end,
+  },
+  {
+    "nvim-tree.lua",
+    for_cat = "tree",
+    keys = {
+      { "<leader>t", "<cmd>NvimTreeToggle<CR>", desc = "Toggle file tree", },
+    },
+    after = function(plugin)
+      require("nvim-tree").setup()
+    end
+  },
+  {
+    -- TODO: Replace toggle term and nvim-tree with snacks equivilants?
+    -- Potentially checkout the lazygit module. Might even be able to replace
+    -- telescope?
+    -- if you do replace telescope, the picker module has a *ton* of interesting pickers, such as an undotree.
+    "snacks.nvim",
+    for_cat = "always",
+    priority = 10,
+    after = function()
+      local Snacks = require("snacks")
+      Snacks.setup({
+        input = {},
+        image = {},
+        notifier = {},
+        scroll = {},
+        picker = {
+          enabled = true,
+          ui_select = true,
+        },
+        terminal = {},
+        indent = {
+          animate = { enabled = true },
+          scope = { enabled = true },
+          chunk = { enabled = true },
+        },
+      })
+      -- setup rename autocmds
+      local prev = { new_name = "", old_name = "" } -- Prevents duplicate events
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "NvimTreeSetup",
+        callback = function()
+          local events = require("nvim-tree.api").events
+          events.subscribe(events.Event.NodeRenamed, function(data)
+            if prev.new_name ~= data.new_name or prev.old_name ~= data.old_name then
+              data = data
+              Snacks.rename.on_rename_file(data.old_name, data.new_name)
+            end
+          end)
+        end,
+      })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "OilActionsPost",
+        callback = function(event)
+          if event.data.actions.type == "move" then
+            Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+          end
+        end,
+      })
+    end
   },
 }
