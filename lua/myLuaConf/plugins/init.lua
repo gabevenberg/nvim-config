@@ -30,7 +30,7 @@ if nixCats('always') then
   -- didnt seem necessary.
   vim.g.loaded_netrwPlugin = 1
   require("oil").setup({
-    default_file_explorer = true,
+    default_file_explorer = false,
     view_options = {
       show_hidden = true
     },
@@ -63,8 +63,109 @@ if nixCats('always') then
   vim.keymap.set("n", "<leader>-", "<cmd>Oil .<CR>", { noremap = true, desc = 'Open nvim root directory' })
 end
 
+if nixCats("always") then
+  -- Potentially checkout the lazygit module.
+  local Snacks = require("snacks")
+  Snacks.setup({
+    bufdelete = { enable = true },
+    dim = { enable = true },
+    git = { enable = true },
+    image = { enable = true },
+    input = { enable = true },
+    lazygit = { enable = true },
+    notifier = { enable = true },
+    scroll = { enable = true },
+    terminal = { enable = true },
+    toggle = { enable = true },
+    quickfile = { enable = true },
+    scope = { enable = true },
+    statuscolumn = { enable = true },
+
+    explorer = { replace_netrw = true },
+    picker = {
+      enabled = true,
+      ui_select = true,
+      matcher = {
+        fuzzy = true,
+        frecency = true,
+      },
+      previewers = {
+        diff = {
+          builtin = true,    -- use Neovim for previewing diffs (true) or use an external tool (false)
+          cmd = { "delta" }, -- example to show a diff with delta
+        },
+        git = {
+          builtin = true, -- use Neovim for previewing git output (true) or use git (false)
+        },
+      },
+    },
+    indent = {
+      enabled = true,
+      animate = { enabled = false },
+      scope = { enabled = true },
+      chunk = { enabled = true },
+    },
+  })
+
+  -- setup keybinds.
+  vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
+  vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "File [T]ree" })
+  vim.keymap.set("n", "<leader>gb", Snacks.git.blame_line, { desc = "[G]it [B]lame" })
+  vim.keymap.set("n", "<leader>gl", Snacks.git.blame_line, { desc = "[L]azy[G]it" })
+
+  -- picker keybinds
+  vim.keymap.set("n", "<leader>fGb", Snacks.picker.grep_buffers, { desc = "[G]rep buffers" })
+  vim.keymap.set("n", "<leader>fGl", Snacks.picker.lines, { desc = "[L]ines in buffer" })
+  vim.keymap.set("n", "<leader>fb", Snacks.picker.buffers, { desc = "[B]uffers" })
+  vim.keymap.set("n", "<leader>ff", Snacks.picker.files, { desc = "[F]iles" })
+  vim.keymap.set("n", "<leader>fg", Snacks.picker.grep, { desc = "[G]rep all" })
+  vim.keymap.set("n", "<leader>fh", Snacks.picker.help, { desc = "[H]elp" })
+  vim.keymap.set("n", "<leader>fi", Snacks.picker.icons, { desc = "[I]cons" })
+  vim.keymap.set("n", "<leader>fm", Snacks.picker.marks, { desc = "[M]arks" })
+  vim.keymap.set("n", "<leader>fs", Snacks.picker.spelling, { desc = "[S]pelling" })
+  vim.keymap.set("n", "<leader>ft", Snacks.picker.treesitter, { desc = "[T]reesitter" })
+  vim.keymap.set("n", "<leader>fu", Snacks.picker.undo, { desc = "[U]ndo" })
+  vim.keymap.set("n", "<leader>fz", Snacks.picker.zoxide, { desc = "[Z]oxide" })
+
+  -- picker git keybinds
+  vim.keymap.set("n", "<leader>gb", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
+  vim.keymap.set("n", "<leader>gl", Snacks.picker.git_log, { desc = "[G]it [L]og" })
+  vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff" })
+
+  -- setup toggles
+  Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>cs")
+  Snacks.toggle.option("relativenumber", { name = "Relative Numbering" }):map("<leader>n")
+  Snacks.toggle.dim():map("<leader>d")
+
+  -- terminal keybinds
+  vim.keymap.set("n", "<leader>s", function()
+    Snacks.terminal.toggle(nil, { win = { position = "float" } })
+  end, { desc = "terminal" })
+
+  vim.keymap.set("t", "<esc>", function(self)
+    self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
+    if self.esc_timer:is_active() then
+      self.esc_timer:stop()
+      vim.cmd("stopinsert")
+    else
+      self.esc_timer:start(200, 0, function() end)
+      return "<esc>"
+    end
+  end, { expr = true, desc = "Double tap to escape terminal" })
+
+  -- setup rename autocmds
+  local prev = { new_name = "", old_name = "" } -- Prevents duplicate events
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "OilActionsPost",
+    callback = function(event)
+      if event.data.actions.type == "move" then
+        Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+      end
+    end,
+  })
+end
+
 require('lze').load {
-  { import = "myLuaConf.plugins.telescope", },
   { import = "myLuaConf.plugins.treesitter", },
   { import = "myLuaConf.plugins.completion", },
   {
@@ -82,7 +183,7 @@ require('lze').load {
       { "<leader>ms", "<cmd>MarkdownPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "markdown preview stop" },
       { "<leader>mt", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown preview toggle" },
     },
-    before = function(plugin)
+    before = function()
       vim.g.mkdp_auto_close = 0
     end,
   },
@@ -90,7 +191,7 @@ require('lze').load {
     "leap.nvim",
     for_cat = 'always',
     event = "DeferredUIEnter",
-    after = function(plugin)
+    after = function()
       require('leap').set_default_mappings()
     end,
   },
@@ -99,14 +200,14 @@ require('lze').load {
     for_cat = 'always',
     event = "DeferredUIEnter",
     -- keys = "",
-    after = function(plugin)
+    after = function()
       require('nvim-surround').setup()
     end,
   },
   {
     "marks.nvim",
     for_cat = "always",
-    after = function(plugin)
+    after = function()
       require('marks').setup({})
     end
   },
@@ -121,42 +222,6 @@ require('lze').load {
     end,
   },
   {
-    "fidget.nvim",
-    for_cat = 'always',
-    event = "DeferredUIEnter",
-    -- keys = "",
-    after = function(plugin)
-      require('fidget').setup({})
-    end,
-  },
-  {
-    "toggleterm.nvim",
-    for_cat = "always",
-    after = function(plugin)
-      require("toggleterm").setup({
-        direction = "horizontal",
-        insert_mappings = false,
-        open_mapping = [[<c-\>]],
-        terminal_mappings = false,
-      })
-
-      local Terminal = require("toggleterm.terminal").Terminal
-      Floatingterm = Terminal:new({
-        hidden = true,
-        direction = "float",
-      })
-
-      vim.keymap.set(
-        "n",
-        "<leader>s",
-        function()
-          Floatingterm:toggle()
-        end,
-        { desc = "toggle [S]cratch terminal", }
-      )
-    end
-  },
-  {
     "lualine.nvim",
     for_cat = 'always',
     -- cmd = { "" },
@@ -164,7 +229,7 @@ require('lze').load {
     -- ft = "",
     -- keys = "",
     -- colorscheme = "",
-    after = function(plugin)
+    after = function()
       require('lualine').setup({
         options = {
           alwaysDivideMiddle = true,
@@ -207,7 +272,7 @@ require('lze').load {
     -- ft = "",
     -- keys = "",
     -- colorscheme = "",
-    after = function(plugin)
+    after = function()
       require('gitsigns').setup({
         -- See `:help gitsigns.txt`
         signs = {
@@ -286,79 +351,20 @@ require('lze').load {
   {
     "which-key.nvim",
     for_cat = 'always',
-    after = function(plugin)
+    after = function()
       require('which-key').setup({
       })
       require('which-key').add {
-        { "<leader>g", group = "[g]it" },
+        { "<leader>g",  group = "[g]it" },
+        { "<leader>z",  group = "[z]ettelkasten" },
         { "<leader>gt", group = "[t]oggle" },
-        { "<leader>m", group = "[m]arkdown" },
-        { "<leader>f", group = "[f]ind" },
-        { "<leader>t", group = "[t]ree" },
-        { "<leader>c", group = "[c]heck" },
-        { "<leader>l", group = "[l]sp" },
+        { "<leader>m",  group = "[m]arkdown" },
+        { "<leader>f",  group = "[f]ind" },
+        { "<leader>t",  group = "[t]ree" },
+        { "<leader>c",  group = "[c]heck" },
+        { "<leader>l",  group = "[l]sp" },
         { "<leader>lw", group = "[l]sp [w]orkspace" },
       }
     end,
-  },
-  {
-    "nvim-tree.lua",
-    for_cat = "tree",
-    keys = {
-      { "<leader>t", "<cmd>NvimTreeToggle<CR>", desc = "Toggle file tree", },
-    },
-    after = function(plugin)
-      require("nvim-tree").setup()
-    end
-  },
-  {
-    -- TODO: Replace toggle term and nvim-tree with snacks equivilants?
-    -- Potentially checkout the lazygit module. Might even be able to replace
-    -- telescope?
-    -- if you do replace telescope, the picker module has a *ton* of interesting pickers, such as an undotree.
-    "snacks.nvim",
-    for_cat = "always",
-    priority = 10,
-    after = function()
-      local Snacks = require("snacks")
-      Snacks.setup({
-        input = {},
-        image = {},
-        notifier = {},
-        scroll = {},
-        picker = {
-          enabled = true,
-          ui_select = true,
-        },
-        terminal = {},
-        indent = {
-          animate = { enabled = true },
-          scope = { enabled = true },
-          chunk = { enabled = true },
-        },
-      })
-      -- setup rename autocmds
-      local prev = { new_name = "", old_name = "" } -- Prevents duplicate events
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "NvimTreeSetup",
-        callback = function()
-          local events = require("nvim-tree.api").events
-          events.subscribe(events.Event.NodeRenamed, function(data)
-            if prev.new_name ~= data.new_name or prev.old_name ~= data.old_name then
-              data = data
-              Snacks.rename.on_rename_file(data.old_name, data.new_name)
-            end
-          end)
-        end,
-      })
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "OilActionsPost",
-        callback = function(event)
-          if event.data.actions.type == "move" then
-            Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
-          end
-        end,
-      })
-    end
   },
 }

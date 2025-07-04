@@ -55,7 +55,15 @@
       name,
       mkPlugin,
       ...
-    } @ packageDef: {
+    } @ packageDef: let
+      colorschemes = with pkgs.vimPlugins; {
+        "onedark" = onedark-nvim;
+        "catppuccin" = catppuccin-nvim;
+        "tokyonight" = tokyonight-nvim;
+        "nord" = nord-nvim;
+        "gruvbox" = gruvbox-nvim;
+      };
+    in {
       # to define and use a new category, simply add a new list to a set here,
       # and later, you will include categoryname = true; in the set you
       # provide when you build the package using this builder function.
@@ -72,15 +80,13 @@
           ripgrep
           fd
           fzf
-        ];
-        telescope = [
+          lazygit
           zoxide
         ];
         lsp = {
           rust = [
             rust-analyzer
             cargo
-
           ];
           lua = [
             lua-language-server
@@ -117,7 +123,7 @@
           todo-comments-nvim
           marks-nvim
         ];
-        lsp={
+        lsp = {
           rust = [
             rustaceanvim
           ];
@@ -132,20 +138,11 @@
           nvim-treesitter.withAllGrammars
           treesj
         ];
+        allcolorschemes = colorschemes;
         # You can retreive information from the
         # packageDefinitions of the package this was packaged with.
         # :help nixCats.flake.outputs.categoryDefinitions.scheme
-        themer = with pkgs.vimPlugins; (
-          builtins.getAttr (categories.colorscheme or "gruvbox") {
-            # Theme switcher without creating a new category
-            "onedark" = onedark-nvim;
-            "catppuccin" = catppuccin-nvim;
-            "tokyonight" = tokyonight-nvim;
-            "nord" = nord-nvim;
-            "gruvbox" = gruvbox-nvim;
-            "solarized" = solarized-nvim;
-          }
-        );
+        themer = builtins.getAttr (categories.colorscheme or "gruvbox") colorschemes;
         # This is obviously a fairly basic usecase for this, but still nice.
       };
 
@@ -160,7 +157,6 @@
             nvim-dap
             nvim-dap-ui
             nvim-dap-virtual-text
-            telescope-dap-nvim
           ];
         };
         lint = [
@@ -189,11 +185,6 @@
           gitsigns-nvim
           nvim-surround
           leap-nvim
-          toggleterm-nvim
-        ];
-        tree = [
-          nvim-tree-lua
-          fidget-nvim
         ];
         completion = [
           luasnip
@@ -202,12 +193,6 @@
           blink-cmp
           blink-compat
           colorful-menu-nvim
-        ];
-        telescope = [
-          telescope-ui-select-nvim
-          telescope-nvim
-          telescope-zoxide
-          telescope-file-browser-nvim
         ];
         extra = [
           vim-startuptime
@@ -244,11 +229,9 @@
       extraCats = {
         debug = [
           ["debug" "default"]
-          ["telescope"]
         ];
         lsp = [
           ["lsp" "default"]
-          ["telescope"]
         ];
       };
     };
@@ -289,11 +272,9 @@
           markdown = true;
           lsp = true;
           completion = true;
-          telescope = true;
-          tree = true;
           debug = true;
           lspDebugMode = false;
-          themer = true;
+          allcolorschemes = true;
           colorscheme = "gruvbox";
         };
         extra = {
@@ -317,8 +298,6 @@
           always = true;
           treesitter = true;
           completion = true;
-          telescope = true;
-          tree = true;
           lspDebugMode = false;
           themer = true;
           colorscheme = "gruvbox";
@@ -368,6 +347,8 @@
       # from the package we give it.
       # and additionally output the original as default.
       packages = utils.mkAllWithDefault defaultPackage;
+
+      formatter = pkgs.alejandra;
 
       # choose your package for devShell
       # and add whatever else you want in it.

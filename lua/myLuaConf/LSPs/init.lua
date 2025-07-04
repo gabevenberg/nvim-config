@@ -2,47 +2,71 @@ local catUtils = require('nixCatsUtils')
 if (catUtils.isNixCats and nixCats('lspDebugMode')) then
   vim.lsp.set_log_level("debug")
 end
--- we create a function that lets us more easily define mappings specific
--- for LSP related items. It sets the mode, buffer and description for us each time.
 
-local lspmap = function(keys, func, desc)
-  if desc then
-    desc = 'LSP: ' .. desc
-  end
+local Snacks = require("snacks")
 
-  -- all of our LSP keybindings will be namespaced under <leader>l
-  keys = '<leader>l' .. keys
+vim.keymap.set("n", "<leader>lI", Snacks.picker.lsp_implementations, { desc = "Goto [I]mplementation" })
+vim.keymap.set("n", "<leader>lR", Snacks.picker.lsp_references, { desc = "Goto [R]eferences" })
+vim.keymap.set("n", "<leader>li", Snacks.picker.diagnostics, { desc = "D[i]agnostics" })
+vim.keymap.set("n", "<leader>ls", Snacks.picker.lsp_symbols, { desc = "Document [S]ymbols" })
+vim.keymap.set("n", "<leader>lws", Snacks.picker.lsp_workspace_symbols, { desc = "[W]orkspace [S]ymbols" })
 
-  vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-end
+vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, { desc = "Goto [D]eclaration" })
+vim.keymap.set("n", "<leader>lD", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
+vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
+vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Goto [D]efinition" })
+vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format buffer" })
+vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover Documentation" })
+vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "[R]ename" })
+vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
+vim.keymap.set("n", "<leader>lwa", vim.lsp.buf.add_workspace_folder, { desc = "[W]orkspace [A]dd Folder" })
+vim.keymap.set("n", "<leader>lwl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+  { desc = "[W]orkspace [L]ist Folders" })
+vim.keymap.set("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder, { desc = "[W]orkspace [R]emove Folder" })
 
-lspmap('r', vim.lsp.buf.rename, '[R]ename')
-lspmap('a', vim.lsp.buf.code_action, '[C]ode Action')
+-- setup lsp progress notifications
+local progress = vim.defaulttable()
+vim.api.nvim_create_autocmd("LspProgress", {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local value = ev.data.params
+        .value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+    if not client or type(value) ~= "table" then
+      return
+    end
+    local p = progress[client.id]
 
-lspmap('d', vim.lsp.buf.definition, 'Goto [D]efinition')
+    for i = 1, #p + 1 do
+      if i == #p + 1 or p[i].token == ev.data.params.token then
+        p[i] = {
+          token = ev.data.params.token,
+          msg = ("[%3d%%] %s%s"):format(
+            value.kind == "end" and 100 or value.percentage or 100,
+            value.title or "",
+            value.message and (" **%s**"):format(value.message) or ""
+          ),
+          done = value.kind == "end",
+        }
+        break
+      end
+    end
 
--- NOTE: why are these functions that call the telescope builtin?
--- because otherwise they would load telescope eagerly when this is defined.
--- due to us using the on_require handler to make sure it is available.
-if nixCats('telescope') then
-  lspmap('R', function() require('telescope.builtin').lsp_references() end, 'Goto [R]eferences')
-  lspmap('I', function() require('telescope.builtin').lsp_implementations() end, 'Goto [I]mplementation')
-  lspmap('s', function() require('telescope.builtin').lsp_document_symbols() end, 'Document [S]ymbols')
-  lspmap('ws', function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, '[W]orkspace [S]ymbols')
-end   -- TODO: Investigate whether I can replace these with snacsk.nvim.
+    local msg = {} ---@type string[]
+    progress[client.id] = vim.tbl_filter(function(v)
+      return table.insert(msg, v.msg) or not v.done
+    end, p)
 
-lspmap('D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-lspmap('h', vim.lsp.buf.hover, 'Hover Documentation')
-lspmap('s', vim.lsp.buf.signature_help, 'Signature Documentation')
-lspmap('f', vim.lsp.buf.format, 'Format buffer')
-
--- Lesser used LSP functionality
-lspmap('D', vim.lsp.buf.declaration, 'Goto [D]eclaration')
-lspmap('wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-lspmap('wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-lspmap('wl', function()
-  print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-end, '[W]orkspace [L]ist Folders')
+    local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+    vim.notify(table.concat(msg, "\n"), "info", {
+      id = "lsp_progress",
+      title = client.name,
+      opts = function(notif)
+        notif.icon = #progress[client.id] == 0 and " "
+            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+      end,
+    })
+  end,
+})
 
 -- NOTE: This file uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
 -- This is a slightly more performant fallback function
@@ -67,6 +91,8 @@ require('lze').load {
     "nvim-lspconfig",
     for_cat = "lsp",
     on_require = { "lspconfig" },
+    -- rustaceanvim and zk-nvim dont require("lspconfig")
+    ft = { "markdown", "rust" },
     -- NOTE: define a function for lsp,
     -- and it will run for all specs with type(plugin.lsp) == table
     -- when their filetype trigger loads them
@@ -91,7 +117,7 @@ require('lze').load {
   {
     -- lazydev makes your lsp way better in your config without needing extra lsp configuration.
     "lazydev.nvim",
-    for_cat = "lua",
+    for_cat = "lsp.lua",
     cmd = { "LazyDev" },
     ft = "lua",
     after = function(_)
@@ -105,7 +131,7 @@ require('lze').load {
   {
     -- name of the lsp
     "lua_ls",
-    enabled = nixCats('lua'),
+    enabled = nixCats('lsp.lua'),
     -- provide a table containing filetypes,
     -- and then whatever your functions defined in the function type specs expect.
     -- in our case, it just expects the normal lspconfig setup options,
@@ -129,6 +155,16 @@ require('lze').load {
       },
     },
     -- also these are regular specs and you can use before and after and all the other normal fields
+  },
+  {
+    "basedpyright",
+    enabled = nixCats("lsp.python"),
+    lsp = {},
+  },
+  {
+    "ruff",
+    enabled = nixCats("lsp.python"),
+    lsp = {},
   },
   {
     "nixd",
@@ -179,5 +215,24 @@ require('lze').load {
   {
     "rustaceanvim",
     for_cat = "lsp.rust",
+  },
+  {
+    "zk-nvim",
+    for_cat = "lsp.zk",
+    ft = "markdown",
+    after = function()
+      require("zk").setup({ picker = "snacks_picker" })
+
+      vim.api.nvim_set_keymap("n", "<leader>zb", "<Cmd>ZkBackLinks<CR>", { desc = "Show [B]acklinkgs" })
+      vim.api.nvim_set_keymap("n", "<leader>zl", "<Cmd>ZkLinks<CR>", { desc = "Show [L]inks" })
+      vim.api.nvim_set_keymap("n", "<leader>zi", ":'<,'>ZkInsertLink<CR>", { desc = "[I]nsert link" })
+      vim.api.nvim_set_keymap("n", "<leader>zn", "<Cmd>ZkNew { title = vim.fn.input('Title: ') }<CR>",
+        { desc = "[N]ew note" })
+      vim.api.nvim_set_keymap("n", "<leader>zo", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", { desc = "[O]pen notes" })
+      vim.api.nvim_set_keymap("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "Search [T]ags" })
+      vim.api.nvim_set_keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", { desc = "[F]ind note from selection" })
+      vim.api.nvim_set_keymap("v", "<leader>zn", ":'<,'>ZkNewFromTitleSelection<CR>", { desc =
+      "[N]ew note from selection" })
+    end
   },
 }

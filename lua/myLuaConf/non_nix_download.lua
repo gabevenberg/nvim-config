@@ -1,3 +1,4 @@
+-- TODO: completley out of date
 -- load the plugins via paq-nvim when not on nix
 -- YOU are in charge of putting the plugin
 -- urls and build steps in here, which will only be used when not on nix.
