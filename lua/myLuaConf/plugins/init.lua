@@ -74,7 +74,6 @@ if nixCats("always") then
     input = { enable = true },
     lazygit = { enable = true },
     notifier = { enable = true },
-    scroll = { enable = true },
     terminal = { enable = true },
     toggle = { enable = true },
     quickfile = { enable = true },
@@ -168,6 +167,9 @@ end
 require('lze').load {
   { import = "myLuaConf.plugins.treesitter", },
   { import = "myLuaConf.plugins.completion", },
+  { import = "myLuaConf.plugins.gitsigns", },
+  { import = "myLuaConf.plugins.lualine", },
+  { import = "myLuaConf.plugins.which-key", },
   {
     "markdown-preview.nvim",
     -- NOTE: for_cat is a custom handler that just sets enabled value for us,
@@ -212,6 +214,38 @@ require('lze').load {
     end
   },
   {
+    "venn.nvim",
+    for_cat = "always",
+    keys = {
+      { "<leader>v", function() Toggle_venn() end, desc = "toggle diagram drawing" }
+    },
+    before = function()
+      -- venn.nvim: enable or disable keymappings
+      function _G.Toggle_venn()
+        local venn_enabled = vim.inspect(vim.b.venn_enabled)
+        if venn_enabled == "nil" then
+          vim.b.venn_enabled = true
+          vim.o.virtualedit="all"
+          -- draw a line on HJKL keystokes
+          vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "K", "<C-v>k:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "L", "<C-v>l:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "H", "<C-v>h:VBox<CR>", { noremap = true })
+          -- draw a box by pressing "f" with visual selection
+          vim.api.nvim_buf_set_keymap(0, "v", "f", ":VBox<CR>", { noremap = true })
+        else
+          vim.o.virtualedit=""
+          vim.api.nvim_buf_del_keymap(0, "n", "J")
+          vim.api.nvim_buf_del_keymap(0, "n", "K")
+          vim.api.nvim_buf_del_keymap(0, "n", "L")
+          vim.api.nvim_buf_del_keymap(0, "n", "H")
+          vim.api.nvim_buf_del_keymap(0, "v", "f")
+          vim.b.venn_enabled = nil
+        end
+      end
+    end
+  },
+  {
     "vim-startuptime",
     for_cat = 'extra',
     cmd = { "StartupTime" },
@@ -220,151 +254,5 @@ require('lze').load {
       vim.g.startuptime_tries = 10
       vim.g.startuptime_exe_path = nixCats.packageBinPath
     end,
-  },
-  {
-    "lualine.nvim",
-    for_cat = 'always',
-    -- cmd = { "" },
-    event = "DeferredUIEnter",
-    -- ft = "",
-    -- keys = "",
-    -- colorscheme = "",
-    after = function()
-      require('lualine').setup({
-        options = {
-          alwaysDivideMiddle = true,
-          icons_enabled = true,
-          component_separators = { left = '', right = '' },
-          section_separators = { left = '', right = '' },
-        },
-        inactive_sections = {
-          lualine_a = {},
-          lualine_b = {},
-          lualine_c = { "filename" },
-          lualine_x = { "filetype" },
-          lualine_y = {},
-          lualine_z = {},
-        },
-        sections = {
-          lualine_a = { "mode" },
-          lualine_b = { "branch", "diff", "diagnostics" },
-          lualine_c = { { "filename", path = 1 } },
-          lualine_x = { "encoding", "fileformat", "filetype" },
-          lualine_y = { "progress" },
-          lualine_z = { "location" },
-        },
-        tabline = {
-          lualine_a = { { "buffers", mode = 4 } },
-          lualine_b = {},
-          lualine_c = {},
-          lualine_x = {},
-          lualine_y = {},
-          lualine_z = { { "tabs", mode = 2 } }
-        },
-      })
-    end,
-  },
-  {
-    "gitsigns.nvim",
-    for_cat = 'always',
-    event = "DeferredUIEnter",
-    -- cmd = { "" },
-    -- ft = "",
-    -- keys = "",
-    -- colorscheme = "",
-    after = function()
-      require('gitsigns').setup({
-        -- See `:help gitsigns.txt`
-        signs = {
-          add = { text = '+' },
-          change = { text = '~' },
-          delete = { text = '_' },
-          topdelete = { text = '‾' },
-          changedelete = { text = '~' },
-        },
-        on_attach = function(bufnr)
-          local gs = package.loaded.gitsigns
-
-          local function map(mode, l, r, opts)
-            opts = opts or {}
-            opts.buffer = bufnr
-            vim.keymap.set(mode, l, r, opts)
-          end
-
-          -- Navigation
-          map({ 'n', 'v' }, ']c', function()
-            if vim.wo.diff then
-              return ']c'
-            end
-            vim.schedule(function()
-              gs.next_hunk()
-            end)
-            return '<Ignore>'
-          end, { expr = true, desc = 'Jump to next hunk' })
-
-          map({ 'n', 'v' }, '[c', function()
-            if vim.wo.diff then
-              return '[c'
-            end
-            vim.schedule(function()
-              gs.prev_hunk()
-            end)
-            return '<Ignore>'
-          end, { expr = true, desc = 'Jump to previous hunk' })
-
-          -- Actions
-          -- visual mode
-          map('v', '<leader>hs', function()
-            gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end, { desc = 'stage git hunk' })
-          map('v', '<leader>hr', function()
-            gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end, { desc = 'reset git hunk' })
-          -- normal mode
-          map('n', '<leader>gs', gs.stage_hunk, { desc = 'git stage hunk' })
-          map('n', '<leader>gr', gs.reset_hunk, { desc = 'git reset hunk' })
-          map('n', '<leader>gS', gs.stage_buffer, { desc = 'git Stage buffer' })
-          map('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
-          map('n', '<leader>gR', gs.reset_buffer, { desc = 'git Reset buffer' })
-          map('n', '<leader>gp', gs.preview_hunk, { desc = 'preview git hunk' })
-          map('n', '<leader>gb', function()
-            gs.blame_line { full = false }
-          end, { desc = 'git blame line' })
-          map('n', '<leader>gd', gs.diffthis, { desc = 'git diff against index' })
-          map('n', '<leader>gD', function()
-            gs.diffthis '~'
-          end, { desc = 'git diff against last commit' })
-
-          -- Toggles
-          map('n', '<leader>gtb', gs.toggle_current_line_blame, { desc = 'toggle git blame line' })
-          map('n', '<leader>gtd', gs.toggle_deleted, { desc = 'toggle git show deleted' })
-
-          -- Text object
-          map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'select git hunk' })
-        end,
-      })
-      vim.cmd([[hi GitSignsAdd guifg=#04de21]])
-      vim.cmd([[hi GitSignsChange guifg=#83fce6]])
-      vim.cmd([[hi GitSignsDelete guifg=#fa2525]])
-    end,
-  },
-  {
-    "which-key.nvim",
-    for_cat = 'always',
-    after = function()
-      require('which-key').setup({
-      })
-      require('which-key').add {
-        { "<leader>g",  group = "[g]it" },
-        { "<leader>z",  group = "[z]ettelkasten" },
-        { "<leader>gt", group = "[t]oggle" },
-        { "<leader>m",  group = "[m]arkdown" },
-        { "<leader>f",  group = "[f]ind" },
-        { "<leader>t",  group = "[t]ree" },
-        { "<leader>c",  group = "[c]heck" },
-        { "<leader>l",  group = "[l]sp" },
-        { "<leader>lw", group = "[l]sp [w]orkspace" },
-      }
-    end,
-  },
+  }
 }

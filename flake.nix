@@ -157,6 +157,7 @@
             nvim-dap
             nvim-dap-ui
             nvim-dap-virtual-text
+            venn-nvim
           ];
         };
         lint = [
