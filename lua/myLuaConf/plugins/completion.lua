@@ -49,18 +49,12 @@ return {
         -- See :h blink-cmp-config-keymap for configuring keymaps
         keymap = {
           preset = "enter",
-          ["<Tab>"] = { "select_next", "fallback" },
-          ["<S-Tab>"] = { "select_prev", "fallback" },
+          ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
+          ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
         },
         cmdline = {
           enabled = true,
           completion = {
-            list = {
-              selection = {
-                preselect = false,
-                -- auto_insert = false,
-              },
-            },
             menu = {
               auto_show = true,
             },
@@ -89,6 +83,12 @@ return {
           },
         },
         completion = {
+          list = {
+            selection = {
+              preselect = false,
+              auto_insert = false,
+            },
+          },
           menu = {
             draw = {
               treesitter = { 'lsp' },
