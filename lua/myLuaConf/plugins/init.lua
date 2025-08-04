@@ -102,7 +102,7 @@ if nixCats("always") then
       scope = { enabled = true },
       chunk = { enabled = true },
     },
-    image = { enabled = false },
+    image = { enabled = false, inline = false, float = false },
     lazygit = { enabled = false, configure = false },
   }
   if nixCats("markdown") then
@@ -116,8 +116,7 @@ if nixCats("always") then
   -- setup keybinds.
   vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
   vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "File [T]ree" })
-  vim.keymap.set("n", "<leader>gb", Snacks.git.blame_line, { desc = "[G]it [B]lame" })
-  vim.keymap.set("n", "<leader>gl", Snacks.git.blame_line, { desc = "[L]azy[G]it" })
+  vim.keymap.set("n", "<leader>i", Snacks.image.hover, { desc = "[I]mage preview" })
 
   -- picker keybinds
   vim.keymap.set("n", "<leader>fGb", Snacks.picker.grep_buffers, { desc = "[G]rep buffers" })
@@ -134,6 +133,7 @@ if nixCats("always") then
   vim.keymap.set("n", "<leader>fz", Snacks.picker.zoxide, { desc = "[Z]oxide" })
 
   -- picker git keybinds
+  vim.keymap.set("n", "<leader>gB", Snacks.git.blame_line, { desc = "[G]it [B]lame" })
   vim.keymap.set("n", "<leader>gb", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
   vim.keymap.set("n", "<leader>gl", Snacks.picker.git_log, { desc = "[G]it [L]og" })
   vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff" })
