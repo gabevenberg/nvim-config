@@ -66,13 +66,11 @@ end
 if nixCats("always") then
   -- Potentially checkout the lazygit module.
   local Snacks = require("snacks")
-  Snacks.setup({
+  local config = {
     bufdelete = { enable = true },
     dim = { enable = true },
     git = { enable = true },
-    image = { enable = true },
     input = { enable = true },
-    lazygit = { enable = true },
     notifier = { enable = true },
     terminal = { enable = true },
     toggle = { enable = true },
@@ -104,7 +102,16 @@ if nixCats("always") then
       scope = { enabled = true },
       chunk = { enabled = true },
     },
-  })
+    image = { enabled = false },
+    lazygit = { enabled = false, configure = false },
+  }
+  if nixCats("markdown") then
+    config.image.enable = true
+  end
+  if nixCats("git") then
+    config.lazygit.enable = true
+  end
+  Snacks.setup(config)
 
   -- setup keybinds.
   vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
@@ -130,6 +137,7 @@ if nixCats("always") then
   vim.keymap.set("n", "<leader>gb", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
   vim.keymap.set("n", "<leader>gl", Snacks.picker.git_log, { desc = "[G]it [L]og" })
   vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff" })
+  vim.keymap.set("n", "<leader>gt", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
 
   -- setup toggles
   Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>cs")
@@ -225,7 +233,7 @@ require('lze').load {
         local venn_enabled = vim.inspect(vim.b.venn_enabled)
         if venn_enabled == "nil" then
           vim.b.venn_enabled = true
-          vim.o.virtualedit="all"
+          vim.o.virtualedit = "all"
           -- draw a line on HJKL keystokes
           vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
           vim.api.nvim_buf_set_keymap(0, "n", "K", "<C-v>k:VBox<CR>", { noremap = true })
@@ -234,7 +242,7 @@ require('lze').load {
           -- draw a box by pressing "f" with visual selection
           vim.api.nvim_buf_set_keymap(0, "v", "f", ":VBox<CR>", { noremap = true })
         else
-          vim.o.virtualedit=""
+          vim.o.virtualedit = ""
           vim.api.nvim_buf_del_keymap(0, "n", "J")
           vim.api.nvim_buf_del_keymap(0, "n", "K")
           vim.api.nvim_buf_del_keymap(0, "n", "L")

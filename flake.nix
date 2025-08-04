@@ -83,6 +83,15 @@
           lazygit
           zoxide
         ];
+        markdown = [
+          mermaid-cli
+          imagemagick
+          texliveSmall
+        ];
+        git = [
+          lazygit
+          git
+        ];
         lsp = {
           rust = [
             rust-analyzer
@@ -182,8 +191,10 @@
             lazydev-nvim
           ];
         };
-        always = [
+        git = [
           gitsigns-nvim
+        ];
+        always = [
           nvim-surround
           leap-nvim
         ];
@@ -269,6 +280,7 @@
         };
         categories = {
           always = true;
+          git = true;
           treesitter = true;
           markdown = true;
           lsp = true;
