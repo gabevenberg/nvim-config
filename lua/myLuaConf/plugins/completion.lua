@@ -47,11 +47,7 @@ return {
       require("blink.cmp").setup({
         -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
         -- See :h blink-cmp-config-keymap for configuring keymaps
-        keymap = {
-          preset = "enter",
-          ["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
-          ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
-        },
+        keymap = { preset = "enter", },
         cmdline = {
           enabled = true,
           completion = {
