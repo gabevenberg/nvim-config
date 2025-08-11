@@ -40,6 +40,11 @@ return {
     on_plugin = { "blink.cmp" },
   },
   {
+    "blink-emoji.nvim",
+    for_cat = "completion",
+    on_plugin = { "blink.cmp" },
+  },
+  {
     "blink.cmp",
     for_cat = "completion",
     event = "DeferredUIEnter",
@@ -118,7 +123,7 @@ return {
           end,
         },
         sources = {
-          default = { 'lsp', 'path', 'snippets', 'buffer', 'omni' },
+          default = { 'lsp', 'path', 'snippets', 'buffer', 'omni', 'emoji', },
           providers = {
             path = {
               score_offset = 50,
@@ -128,6 +133,12 @@ return {
             },
             snippets = {
               score_offset = 40,
+            },
+            emoji = {
+              module = "blink-emoji",
+              name = "Emoji",
+              score_offset = 15,
+              opts = { insert = true },
             },
             cmp_cmdline = {
               name = 'cmp_cmdline',

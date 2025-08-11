@@ -203,6 +203,7 @@
           friendly-snippets
           cmp-cmdline
           blink-cmp
+          blink-emoji-nvim
           blink-compat
           colorful-menu-nvim
         ];
