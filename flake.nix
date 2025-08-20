@@ -143,7 +143,6 @@
         treesitter = [
           comment-nvim
           rainbow-delimiters-nvim
-          nvim-treesitter-context
           nvim-treesitter.withAllGrammars
           treesj
         ];

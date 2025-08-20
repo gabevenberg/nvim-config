@@ -39,11 +39,6 @@ return {
     end,
   },
   {
-    "nvim-treesitter-context",
-    for_cat = 'treesitter',
-    keys = { { "<leader>x", "<cmd>TsContext toggle<CR>", mode = { "n" }, desc = "Toggle Context" }, },
-  },
-  {
     "treesj",
     for_cat = 'treesitter',
     keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" }, },
