@@ -162,6 +162,16 @@ require('lze').load {
     lsp = {},
   },
   {
+    "bashls",
+    enabled = nixCats("lsp.bash"),
+    lsp = {},
+  },
+  {
+    "clangd",
+    enabled = nixCats("lsp.c"),
+    lsp = {},
+  },
+  {
     "ruff",
     enabled = nixCats("lsp.python"),
     lsp = {},
@@ -231,8 +241,10 @@ require('lze').load {
       vim.api.nvim_set_keymap("n", "<leader>zo", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", { desc = "[O]pen notes" })
       vim.api.nvim_set_keymap("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "Search [T]ags" })
       vim.api.nvim_set_keymap("v", "<leader>zf", ":'<,'>ZkMatch<CR>", { desc = "[F]ind note from selection" })
-      vim.api.nvim_set_keymap("v", "<leader>zn", ":'<,'>ZkNewFromTitleSelection<CR>", { desc =
-      "[N]ew note from selection" })
+      vim.api.nvim_set_keymap("v", "<leader>zn", ":'<,'>ZkNewFromTitleSelection<CR>", {
+        desc =
+        "[N]ew note from selection"
+      })
     end
   },
 }

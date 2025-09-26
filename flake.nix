@@ -112,6 +112,10 @@
           C = [
             libclang
           ];
+          bash = [
+            shellcheck
+            bash-language-server
+          ];
         };
         format = [
         ];
