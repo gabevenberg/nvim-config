@@ -189,27 +189,40 @@ require('lze').load {
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle", },
     ft = "markdown",
     keys = {
-      { "<leader>mp", "<cmd>MarkdownPreview <CR>",       mode = { "n" }, noremap = true, desc = "markdown preview" },
-      { "<leader>ms", "<cmd>MarkdownPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "markdown preview stop" },
-      { "<leader>mt", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown preview toggle" },
+      { "<leader>pmp", "<cmd>MarkdownPreview <CR>",       mode = { "n" }, noremap = true, desc = "markdown preview" },
+      { "<leader>pms", "<cmd>MarkdownPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "markdown preview stop" },
+      { "<leader>pmt", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown preview toggle" },
     },
     before = function()
       vim.g.mkdp_auto_close = 0
     end,
   },
   {
+    "typst-preview.nvim",
+    for_cat = "lsp.typst",
+    ft = "typst",
+    cmd = { "TypstPreview", "TypstPreviewStop", "TypstPreviewToggle", },
+    keys = {
+      { "<leader>ptp", "<cmd>TypstPreview <CR>",       mode = { "n" }, noremap = true, desc = "typst preview" },
+      { "<leader>pts", "<cmd>TypstPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "typst preview stop" },
+      { "<leader>ptt", "<cmd>TypstPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "typst preview toggle" },
+    },
+    after = function()
+      require('typst-preview').setup {}
+    end
+  },
+  {
     "leap.nvim",
     for_cat = 'always',
     event = "DeferredUIEnter",
-    after = function()
-      require('leap').set_default_mappings()
-    end,
+    keys = {
+      { "s", "<Plug>(leap)", mode = { "n", "x", "o", "v" }, noremap = true, desc = "leap to char sequence" }
+    },
   },
   {
     "nvim-surround",
     for_cat = 'always',
     event = "DeferredUIEnter",
-    -- keys = "",
     after = function()
       require('nvim-surround').setup()
     end,

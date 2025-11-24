@@ -116,6 +116,9 @@
             shellcheck
             bash-language-server
           ];
+          typst = [
+            tinymist
+          ];
         };
         format = [
         ];
@@ -192,6 +195,9 @@
           ];
           lua = [
             lazydev-nvim
+          ];
+          typst = [
+            typst-preview-nvim
           ];
         };
         git = [

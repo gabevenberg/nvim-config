@@ -13,7 +13,7 @@ vim.keymap.set("n", "<leader>lws", Snacks.picker.lsp_workspace_symbols, { desc =
 
 vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, { desc = "Goto [D]eclaration" })
 vim.keymap.set("n", "<leader>lD", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
-vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
+vim.keymap.set({"n", "v",}, "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
 vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Goto [D]efinition" })
 vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format buffer" })
 vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover Documentation" })
@@ -175,6 +175,17 @@ require('lze').load {
     "ruff",
     enabled = nixCats("lsp.python"),
     lsp = {},
+  },
+  {
+    "tinymist",
+    enabled = nixCats("lsp.tinymist"),
+    lsp = {
+      filetypes = { "typst" },
+      settings = {
+        formatterMode = "typstyle",
+
+      },
+    },
   },
   {
     "nixd",
