@@ -16,24 +16,15 @@ return {
     after = function(plugin)
       -- [[ Configure Treesitter ]]
       -- See `:help nvim-treesitter`
-      require('nvim-treesitter.configs').setup {
+      require('nvim-treesitter').setup {
         highlight = { enable = true, },
         indent = { enable = false, },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = '<c-space>',
-            node_incremental = '<c-space>',
-            scope_incremental = '<c-s>',
-            node_decremental = '<M-space>',
-          },
-        },
       }
     end,
   },
   {
     "comment.nvim",
-    for_cat = 'telescope',
+    for_cat = 'treesitter',
     after = function(plugin)
       require('Comment').setup()
     end,
