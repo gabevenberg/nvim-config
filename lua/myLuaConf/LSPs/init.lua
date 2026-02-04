@@ -12,7 +12,7 @@ vim.keymap.set("n", "<leader>ls", Snacks.picker.lsp_symbols, { desc = "Document 
 vim.keymap.set("n", "<leader>lws", Snacks.picker.lsp_workspace_symbols, { desc = "[W]orkspace [S]ymbols" })
 
 vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, { desc = "Goto [D]eclaration" })
-vim.keymap.set("n", "<leader>lD", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
+vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
 vim.keymap.set({"n", "v",}, "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
 vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Goto [D]efinition" })
 vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format buffer" })
