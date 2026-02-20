@@ -1,6 +1,6 @@
 return {
   "gitsigns.nvim",
-  for_cat = 'always',
+  for_cat = 'git',
   event = "DeferredUIEnter",
   -- cmd = { "" },
   -- ft = "",

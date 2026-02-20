@@ -322,6 +322,8 @@
           treesitter = true;
           completion = true;
           lspDebugMode = false;
+          lsp = false;
+          git = false;
           themer = true;
           colorscheme = "gruvbox";
         };
