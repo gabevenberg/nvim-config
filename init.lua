@@ -1,60 +1,96 @@
---[[
-NOTE:
-if you plan to always load your nixCats via nix,
-you can safely ignore this setup call,
-and the require('myLuaConf.non_nix_download') call below it.
-as well as the entire lua/myLuaConf/non_nix_download file.
-Unless you want the lzUtils file, or the lazy wrapper, you also wont need lua/nixCatsUtils
-
-IF YOU DO NOT DO THIS SETUP CALL:
-the result will be that, when you load this folder without using nix,
-the global nixCats function which you use everywhere
-to check for categories will throw an error.
-This setup function will give it a default value.
-Of course, if you only ever download nvim with nix, this isnt needed.]]
---[[ ----------------------------------- ]]
---[[ This setup function will provide    ]]
---[[ a default value for the nixCats('') ]]
---[[ function so that it will not throw  ]]
---[[ an error if not loaded via nixCats  ]]
---[[ ----------------------------------- ]]
-require('nixCatsUtils').setup {
-  non_nix_value = true,
+-- NOTE: Welcome to your neovim configuration!
+-- The first 100ish lines are setup,
+-- the rest is usage of lze and various core plugins!
+vim.loader.enable() -- <- bytecode caching
+do
+  -- Set up a global in a way that also handles non-nix compat
+  local ok
+  ok, _G.nixInfo = pcall(require, vim.g.nix_info_plugin_name)
+  if not ok then
+    package.loaded[vim.g.nix_info_plugin_name] = setmetatable({}, {
+      __call = function (_, default) return default end
+    })
+    _G.nixInfo = require(vim.g.nix_info_plugin_name)
+    -- If you always use the fetcher function to fetch nix values,
+    -- rather than indexing into the tables directly,
+    -- it will use the value you specified as the default
+    -- TODO: for non-nix compat, vim.pack.add in another file and require here.
+  end
+  nixInfo.isNix = vim.g.nix_info_plugin_name ~= nil
+  ---@module 'lzextras'
+  ---@type lzextras | lze
+  nixInfo.lze = setmetatable(require('lze'), getmetatable(require('lzextras')))
+  function nixInfo.get_nix_plugin_path(name)
+    return nixInfo(nil, "plugins", "lazy", name) or nixInfo(nil, "plugins", "start", name)
+  end
+end
+nixInfo.lze.register_handlers {
+  {
+    -- adds an `auto_enable` field to lze specs
+    -- if true, will disable it if not installed by nix.
+    -- if string, will disable if that name was not installed by nix.
+    -- if a table of strings, it will disable if any were not.
+    spec_field = "auto_enable",
+    set_lazy = false,
+    modify = function(plugin)
+      if vim.g.nix_info_plugin_name then
+        if type(plugin.auto_enable) == "table" then
+          for _, name in pairs(plugin.auto_enable) do
+            if not nixInfo.get_nix_plugin_path(name) then
+              plugin.enabled = false
+              break
+            end
+          end
+        elseif type(plugin.auto_enable) == "string" then
+          if not nixInfo.get_nix_plugin_path(plugin.auto_enable) then
+            plugin.enabled = false
+          end
+        elseif type(plugin.auto_enable) == "boolean" and plugin.auto_enable then
+          if not nixInfo.get_nix_plugin_path(plugin.name) then
+            plugin.enabled = false
+          end
+        end
+      end
+      return plugin
+    end,
+  },
+  {
+    -- we made an options.settings.cats with the value of enable for our top level specs
+    -- give for_cat = "name" to disable if that one is not enabled
+    spec_field = "for_cat",
+    set_lazy = false,
+    modify = function(plugin)
+      if vim.g.nix_info_plugin_name then
+        if type(plugin.for_cat) == "string" then
+          plugin.enabled = nixInfo(false, "settings", "cats", plugin.for_cat)
+        end
+      end
+      return plugin
+    end,
+  },
+  -- From lzextras. This one makes it so that
+  -- you can set up lsps within lze specs,
+  -- and trigger lspconfig setup hooks only on the correct filetypes
+  -- It is (unfortunately) important that it be registered after the above 2,
+  -- as it also relies on the modify hook, and the value of enabled at that point
+  nixInfo.lze.lsp,
 }
---[[
-Nix puts the plugins
-into the directories paq-nvim expects them to be in,
-because both follow the normal neovim scheme.
-So you just put the URLs and build steps in there, and use its opt option to do the same
-thing as putting a plugin in nixCat's optionalPlugins field.
-then load the plugins via paq-nvim
-YOU are in charge of putting the plugin
-urls and build steps in there, which will only be used when not on nix,
-and you should keep any setup functions
-OUT of that file, as they are ONLY loaded when this
-configuration is NOT loaded via nix.
---]]
-require("myLuaConf.non_nix_download")
--- OK, again, that isnt needed if you load this setup via nix, but it is an option.
 
---[[
-outside of when you want to use the nixCats global command
-to decide if something should be loaded, or to pass info from nix to lua,
-thats pretty much everything specific to nixCats that
-needs to be in your config.
-If you always want to load it via nix,
-you pretty much dont need this file at all, and you also won't need
-anything within lua/nixCatsUtils, nor will that be in the default template.
-that directory is addable via the luaUtils template.
-it is not required, but has some useful utility functions.
---]]
+-- NOTE: This config uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
+-- Because we have the paths, we can set a more performant fallback function
+-- for when you don't provide a filetype to trigger on yourself.
+-- If you do provide a filetype, this will never be called.
+nixInfo.lze.h.lsp.set_ft_fallback(function(name)
+  local lspcfg = nixInfo.get_nix_plugin_path "nvim-lspconfig"
+  if lspcfg then
+    local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
+    return (ok and cfg or {}).filetypes or {}
+  else
+    -- the less performant thing we are trying to avoid at startup
+    return (vim.lsp.config[name] or {}).filetypes or {}
+  end
+end)
 
---[[
-ok thats enough for 1 file. Off to lua/myLuaConf/init.lua
-all the config starts there in this example config.
-This config is loadable with and without nix due to the above,
-and the lua/myLuaConf/non_nix_download.lua file.
-the rest is just example of how to configure nvim making use of various
-features of nixCats and using the plugin lze for lazy loading.
---]]
-require('myLuaConf')
+require('opts')
+require('keys')
+require('plugins')

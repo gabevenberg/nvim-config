@@ -1,4 +1,4 @@
--- NOTE: These 2 need to be set up before any plugins are loaded.
+-- NOTE: These 2 should be set up before any plugins with keybinds are loaded.
 vim.g.mapleader = ';'
 vim.g.maplocalleader = ';'
 
@@ -6,9 +6,13 @@ vim.g.maplocalleader = ';'
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
+-- allow .nvim.lua in current dir and parents (project config)
+vim.o.exrc = false -- can be toggled off in that file to stop it from searching further
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
+--  and `:help 'showbreak'`
 vim.opt.list = true
 vim.opt.listchars = { eol = "↲", extends = "⟩", nbsp = "␣", precedes = "⟨", tab = ">-", trail = "•" }
 vim.opt.showbreak = "↪";
@@ -29,6 +33,7 @@ vim.opt.scrolloff = 10
 
 -- Make line numbers default
 vim.opt.number = true
+vim.opt.numberwidth = 3
 
 -- Enable mouse mode
 vim.opt.mouse = 'a'
@@ -39,10 +44,6 @@ vim.opt.wrapmargin = 0
 
 -- get nice visual guides for 80, 100, and 120 cols.
 vim.opt.colorcolumn = { "90", "100", "120", }
-
--- add line numbers
-vim.opt.number = true
-vim.opt.numberwidth = 3
 
 -- Indent
 vim.opt.smarttab = true
@@ -95,22 +96,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.g.netrw_liststyle = 0
 vim.g.netrw_banner = 0
--- [[ Basic Keymaps ]]
 
--- make quick system clipboard opts easier
-vim.keymap.set({ 'n', 'v', 'x' }, '<leader>p', '"+p', { noremap = true, silent = true, desc = 'Paste from clipboard' })
-vim.keymap.set({ "v", "x", "n" }, '<leader>y', '"+y', { noremap = true, silent = true, desc = 'Yank to clipboard' })
-vim.keymap.set({ "n", "v", "x" }, '<leader>Y', '"+yy', { noremap = true, silent = true, desc = 'Yank line to clipboard' })
-vim.keymap.set('i', '<C-p>', '<C-r><C-p>+',
-  { noremap = true, silent = true, desc = 'Paste from clipboard from within insert mode' })
-
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-
--- moving between splits
-vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'move to right split' })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'move to below split' })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'move to above split' })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'move to left split' })
+vim.g.netrw_liststyle=0
+vim.g.netrw_banner=0
