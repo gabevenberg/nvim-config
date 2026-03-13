@@ -1,6 +1,5 @@
--- NOTE: Welcome to your neovim configuration!
 -- The first 100ish lines are setup,
--- the rest is usage of lze and various core plugins!
+-- the rest is usage of require(vim.g.nix_info_plugin_name)lze and various core plugins!
 vim.loader.enable() -- <- bytecode caching
 do
   -- Set up a global in a way that also handles non-nix compat
@@ -17,9 +16,9 @@ do
     -- TODO: for non-nix compat, vim.pack.add in another file and require here.
   end
   nixInfo.isNix = vim.g.nix_info_plugin_name ~= nil
-  ---@module 'lzextras'
+  ---@module "lzextras"
   ---@type lzextras | lze
-  nixInfo.lze = setmetatable(require('lze'), getmetatable(require('lzextras')))
+  nixInfo.lze = setmetatable(require("lze"), getmetatable(require("lzextras")))
   function nixInfo.get_nix_plugin_path(name)
     return nixInfo(nil, "plugins", "lazy", name) or nixInfo(nil, "plugins", "start", name)
   end
@@ -78,7 +77,7 @@ nixInfo.lze.register_handlers {
 
 -- NOTE: This config uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
 -- Because we have the paths, we can set a more performant fallback function
--- for when you don't provide a filetype to trigger on yourself.
+-- for when you don"t provide a filetype to trigger on yourself.
 -- If you do provide a filetype, this will never be called.
 nixInfo.lze.h.lsp.set_ft_fallback(function(name)
   local lspcfg = nixInfo.get_nix_plugin_path "nvim-lspconfig"
@@ -91,6 +90,7 @@ nixInfo.lze.h.lsp.set_ft_fallback(function(name)
   end
 end)
 
-require('opts')
-require('keys')
-require('plugins')
+require("opts")
+require("keys")
+require("plugins")
+require("lsp")

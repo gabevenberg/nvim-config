@@ -1,6 +1,6 @@
 -- NOTE: These 2 should be set up before any plugins with keybinds are loaded.
-vim.g.mapleader = ';'
-vim.g.maplocalleader = ';'
+vim.g.mapleader = ";"
+vim.g.maplocalleader = ";"
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -10,9 +10,9 @@ vim.g.maplocalleader = ';'
 vim.o.exrc = false -- can be toggled off in that file to stop it from searching further
 
 -- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
---  and `:help 'showbreak'`
+--  See `:help "list"`
+--  and `:help "listchars"`
+--  and `:help "showbreak"`
 vim.opt.list = true
 vim.opt.listchars = { eol = "↲", extends = "⟩", nbsp = "␣", precedes = "⟨", tab = ">-", trail = "•" }
 vim.opt.showbreak = "↪";
@@ -20,10 +20,10 @@ vim.opt.showbreak = "↪";
 -- Set highlight on search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
+vim.opt.inccommand = "split"
 
 -- Automatically load changed files
 vim.opt.autoread = true
@@ -36,7 +36,7 @@ vim.opt.number = true
 vim.opt.numberwidth = 3
 
 -- Enable mouse mode
-vim.opt.mouse = 'a'
+vim.opt.mouse = "a"
 
 -- no hard wrapping
 vim.opt.textwidth = 0
@@ -62,7 +62,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = "yes"
 vim.opt.relativenumber = true
 
 -- Decrease update time
@@ -70,7 +70,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
-vim.opt.completeopt = { 'menu', 'preview', 'noselect' }
+vim.opt.completeopt = { "menu", "preview", "noselect" }
 
 vim.opt.termguicolors = true
 
@@ -85,13 +85,13 @@ vim.opt.formatoptions = "rojq"
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
+local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank()
   end,
   group = highlight_group,
-  pattern = '*',
+  pattern = "*",
 })
 
 vim.g.netrw_liststyle = 0

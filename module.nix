@@ -38,7 +38,7 @@ inputs: {
   # You can declare your own options!
   options.settings.colorscheme = lib.mkOption {
     type = lib.types.str;
-    default = "onedark_dark";
+    default = "gruvbox";
   };
   options.settings.minimal = lib.mkOption {
     type = lib.types.bool;
@@ -47,7 +47,6 @@ inputs: {
   config.settings.colorscheme = "gruvbox"; # <- just demonstrating that it is an option
   # and grab it in lua with `require(vim.g.nix_info_plugin_name)("onedark", "settings", "colorscheme") == "moonfly"`
   config.specs.colorscheme = {
-    lazy = true;
     enable = lib.mkIf config.settings.minimal (lib.mkDefault true);
     data = builtins.getAttr config.settings.colorscheme (
       with pkgs.vimPlugins; {
@@ -82,6 +81,7 @@ inputs: {
       fzf
       zoxide
       git
+      delta
       lazygit
       tree-sitter
     ];
@@ -93,7 +93,6 @@ inputs: {
       oil-nvim
       nvim-web-devicons
       nvim-numbertoggle
-      lualine-nvim
       marks-nvim
     ];
   };
