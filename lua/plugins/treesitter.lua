@@ -3,19 +3,13 @@
 return {
   {
     "nvim-treesitter",
-    for_cat = 'treesitter',
-    -- cmd = { "" },
+  for_cat = 'lazy',
     event = "DeferredUIEnter",
-    -- ft = "",
-    -- keys = "",
-    -- colorscheme = "",
     load = function(name)
       vim.cmd.packadd(name)
       vim.cmd.packadd("rainbow-delimiters.nvim")
     end,
-    after = function(plugin)
-      -- [[ Configure Treesitter ]]
-      -- See `:help nvim-treesitter`
+    after = function()
       require('nvim-treesitter').setup {
         highlight = { enable = true, },
         indent = { enable = false, },
@@ -24,14 +18,14 @@ return {
   },
   {
     "comment.nvim",
-    for_cat = 'treesitter',
+  for_cat = 'lazy',
     after = function(plugin)
       require('Comment').setup()
     end,
   },
   {
     "treesj",
-    for_cat = 'treesitter',
+  for_cat = 'lazy',
     keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" }, },
     after = function(_)
       require("treesj").setup({

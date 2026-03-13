@@ -6,18 +6,18 @@ end
 return {
   {
     "cmp-cmdline",
-    for_cat = "completion",
+    for_cat = "lazy",
     on_plugin = { "blink.cmp" },
     load = load_w_after,
   },
   {
     "blink.compat",
-    for_cat = "completion",
+    for_cat = "lazy",
     dep_of = { "cmp-cmdline" },
   },
   {
     "luasnip",
-    for_cat = "completion",
+    for_cat = "lazy",
     dep_of = { "blink.cmp" },
     after = function(_)
       vim.cmd.packadd("friendly-snippets")
@@ -36,17 +36,17 @@ return {
   },
   {
     "colorful-menu.nvim",
-    for_cat = "completion",
+    for_cat = "lazy",
     on_plugin = { "blink.cmp" },
   },
   {
     "blink-emoji.nvim",
-    for_cat = "completion",
+    for_cat = "lazy",
     on_plugin = { "blink.cmp" },
   },
   {
     "blink.cmp",
-    for_cat = "completion",
+    for_cat = "lazy",
     event = "DeferredUIEnter",
     after = function(_)
       require("blink.cmp").setup({
