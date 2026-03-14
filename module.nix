@@ -109,6 +109,7 @@ inputs: {
       comment-nvim
       rainbow-delimiters-nvim
       nvim-treesitter.withAllGrammars
+      flash-nvim
     ];
   };
   config.specs.completion = {

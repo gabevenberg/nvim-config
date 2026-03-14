@@ -3,7 +3,7 @@
 return {
   {
     "nvim-treesitter",
-  for_cat = 'lazy',
+    for_cat = 'lazy',
     event = "DeferredUIEnter",
     load = function(name)
       vim.cmd.packadd(name)
@@ -18,14 +18,14 @@ return {
   },
   {
     "comment.nvim",
-  for_cat = 'lazy',
+    for_cat = 'lazy',
     after = function(plugin)
       require('Comment').setup()
     end,
   },
   {
     "treesj",
-  for_cat = 'lazy',
+    for_cat = 'lazy',
     keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" }, },
     after = function(_)
       require("treesj").setup({

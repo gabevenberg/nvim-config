@@ -13,6 +13,7 @@ require('lze').load {
   { import = "plugins.completion", },
   { import = "plugins.preview.markdown", },
   { import = "plugins.preview.typst", },
+  { import = "plugins.flash", },
   {
     "leap.nvim",
     for_cat = 'always',
