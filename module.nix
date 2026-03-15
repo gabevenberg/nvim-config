@@ -151,7 +151,6 @@ inputs: {
     ];
   };
 
-
   config.specs.zk = {
     after = ["general" "lazy"];
     data = with pkgs.vimPlugins; [
@@ -171,6 +170,15 @@ inputs: {
     extraPackages = with pkgs; [
       typst
       tinymist
+    ];
+  };
+
+  config.specs.go = {
+    name = "go";
+    after = ["general" "lazy"];
+    data = null;
+    extraPackages = with pkgs; [
+      gopls
     ];
   };
 

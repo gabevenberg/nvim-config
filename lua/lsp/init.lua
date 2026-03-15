@@ -107,4 +107,5 @@ require('lze').load {
   { import = "lsp.bash" },
   { import = "lsp.zk" },
   { import = "lsp.rust" },
+  { import = "lsp.go" },
 }
