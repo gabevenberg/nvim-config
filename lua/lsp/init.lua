@@ -12,7 +12,6 @@ if lspEnabled then
   vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
   vim.keymap.set({ "n", "v", }, "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
   vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Goto [D]efinition" })
-  vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format buffer" })
   vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover Documentation" })
   vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "[R]ename" })
   vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
@@ -81,10 +80,29 @@ require('lze').load {
       vim.lsp.enable(plugin.name)
     end,
   },
+
+  {
+    "conform.nvim",
+    for_cat = "lsp",
+    on_require = { "conform" },
+      cmd = { "ConformInfo" },
+    keys = { { "<leader>lf", function() require("conform").format({async=true}) end, mode = { "" }, desc = "Format buffer" }, },
+    after = function()
+      require("conform").setup({
+        default_format_opts = {
+          lsp_format = "fallback",
+        },
+
+        formatters_by_ft = {
+          nix = { "alejandra" }
+        }
+      })
+    end,
+  },
+
   { import = "lsp.lua" },
   { import = "lsp.python" },
   { import = "lsp.C" },
-  { import = "lsp.nix" },
   { import = "lsp.typst" },
   { import = "lsp.bash" },
   { import = "lsp.zk" },

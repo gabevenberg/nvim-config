@@ -115,7 +115,6 @@ inputs: {
   config.specs.completion = {
     after = ["lze"];
     lazy = true;
-    enable = lib.mkIf config.settings.minimal false;
     data = with pkgs.vimPlugins; [
       luasnip
       friendly-snippets
@@ -129,7 +128,6 @@ inputs: {
 
   config.specs.markdown = {
     after = ["general" "lazy"];
-    enable = lib.mkIf config.settings.minimal false;
     lazy = true;
     data = with pkgs.vimPlugins; [
       markdown-preview-nvim
@@ -142,7 +140,6 @@ inputs: {
   };
 
   config.specs.lsp = {
-    enable = lib.mkIf config.settings.minimal false;
     after = ["general" "lazy"];
     lazy = true;
 
@@ -150,8 +147,10 @@ inputs: {
       trouble-nvim
       lualine-lsp-progress
       nvim-lspconfig
+      conform-nvim
     ];
   };
+
 
   config.specs.zk = {
     after = ["general" "lazy"];
@@ -180,7 +179,6 @@ inputs: {
     after = ["general" "lazy"];
     data = null;
     extraPackages = with pkgs; [
-      nixd
       alejandra
     ];
   };
