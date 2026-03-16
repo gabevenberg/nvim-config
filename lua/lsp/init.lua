@@ -85,27 +85,37 @@ require('lze').load {
     "conform.nvim",
     for_cat = "lsp",
     on_require = { "conform" },
-      cmd = { "ConformInfo" },
-    keys = { { "<leader>lf", function() require("conform").format({async=true}) end, mode = { "" }, desc = "Format buffer" }, },
+    cmd = { "ConformInfo" },
+    keys = {
+      { "<leader>lf", function() require("conform").format({ async = true }) end, mode = { "" }, desc = "Format buffer" },
+    },
     after = function()
       require("conform").setup({
         default_format_opts = {
           lsp_format = "fallback",
         },
-
-        formatters_by_ft = {
-          nix = { "alejandra" }
-        }
       })
+      -- need to figure out how to properly seperate this.
+      if nixInfo("settings", "cat", "config") then
+        require("conform").formatters_by_ft.json = { "jq" }
+      end
+      if nixInfo("settings", "cat", "nix") then
+        require("conform").formatters_by_ft.nix = { "alejandra" }
+      end
     end,
   },
 
-  { import = "lsp.lua" },
-  { import = "lsp.python" },
   { import = "lsp.C" },
-  { import = "lsp.typst" },
   { import = "lsp.bash" },
-  { import = "lsp.zk" },
-  { import = "lsp.rust" },
+  { import = "lsp.config" },
   { import = "lsp.go" },
+  { import = "lsp.jsonnet" },
+  { import = "lsp.lua" },
+  { import = "lsp.nix" },
+  { import = "lsp.nushell" },
+  { import = "lsp.python" },
+  { import = "lsp.rust" },
+  { import = "lsp.typst" },
+  { import = "lsp.zig" },
+  { import = "lsp.zk" },
 }

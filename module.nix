@@ -152,7 +152,9 @@ inputs: {
   };
 
   config.specs.zk = {
+    name = "zk";
     after = ["general" "lazy"];
+    lazy = true;
     data = with pkgs.vimPlugins; [
       zk-nvim
     ];
@@ -164,6 +166,7 @@ inputs: {
   config.specs.typst = {
     name = "typst";
     after = ["general" "lazy"];
+    lazy = true;
     data = with pkgs.vimPlugins; [
       typst-preview-nvim
     ];
@@ -176,24 +179,69 @@ inputs: {
   config.specs.go = {
     name = "go";
     after = ["general" "lazy"];
+    lazy = true;
     data = null;
     extraPackages = with pkgs; [
       gopls
     ];
   };
 
+  config.specs.config = {
+    name = "config";
+    after = ["general" "lazy"];
+    lazy = true;
+    data = null;
+    extraPackages = with pkgs; [
+      taplo
+      jq
+      yaml-language-server
+    ];
+  };
+
+  config.specs.jsonnet = {
+    name = "jsonnet";
+    after = ["general" "lazy"];
+    lazy = true;
+    data = null;
+    extraPackages = with pkgs; [
+      jsonnet-language-server
+    ];
+  };
+
+  config.specs.zig = {
+    name = "zig";
+    after = ["general" "lazy"];
+    lazy = true;
+    data = null;
+    extraPackages = with pkgs; [
+      zls
+    ];
+  };
+  config.specs.nushell = {
+    name = "nushell";
+    after = ["general" "lazy"];
+    lazy = true;
+    data = null;
+    extraPackages = with pkgs; [
+      nushell
+    ];
+  };
+
   config.specs.nix = {
     name = "nix";
     after = ["general" "lazy"];
+    lazy = true;
     data = null;
     extraPackages = with pkgs; [
       alejandra
+      nixd
     ];
   };
 
   config.specs.lua = {
     name = "lua";
     after = ["general" "lazy"];
+    lazy = true;
     data = with pkgs.vimPlugins; [
       lazydev-nvim
     ];
@@ -206,6 +254,7 @@ inputs: {
   config.specs.rust = {
     name = "rust";
     after = ["general" "lazy"];
+    lazy = true;
     data = with pkgs.vimPlugins; [
       rustaceanvim
     ];
@@ -218,6 +267,7 @@ inputs: {
   config.specs.python = {
     name = "python";
     after = ["general" "lazy"];
+    lazy = true;
     data = null;
     extraPackages = with pkgs; [
       ty
@@ -228,7 +278,10 @@ inputs: {
   config.specs.C = {
     name = "C";
     after = ["general" "lazy"];
-    data = null;
+    lazy = true;
+    data = with pkgs.vimPlugins; [
+      clangd_extensions-nvim
+    ];
     extraPackages = with pkgs; [
       libclang
     ];
