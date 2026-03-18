@@ -193,7 +193,7 @@ inputs: {
     data = null;
     extraPackages = with pkgs; [
       taplo
-      jq
+      jaq
       yaml-language-server
     ];
   };

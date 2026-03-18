@@ -97,7 +97,7 @@ require('lze').load {
       })
       -- need to figure out how to properly seperate this.
       if nixInfo("settings", "cat", "config") then
-        require("conform").formatters_by_ft.json = { "jq" }
+        require("conform").formatters_by_ft.json = { "jaq" }
       end
       if nixInfo("settings", "cat", "nix") then
         require("conform").formatters_by_ft.nix = { "alejandra" }
