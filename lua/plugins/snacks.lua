@@ -62,7 +62,7 @@ vim.keymap.set("n", "<leader>gB", Snacks.git.blame_line, { desc = "[G]it [B]lame
 vim.keymap.set("n", "<leader>gb", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
 vim.keymap.set("n", "<leader>gl", Snacks.picker.git_log, { desc = "[G]it [L]og" })
 vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff" })
-vim.keymap.set("n", "<leader>gt", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
+vim.keymap.set("n", "<leader>gL", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
 
 -- setup toggles
 Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>cs")
