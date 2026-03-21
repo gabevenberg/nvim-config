@@ -173,6 +173,7 @@ inputs: {
     extraPackages = with pkgs; [
       typst
       tinymist
+      websocat
     ];
   };
 

@@ -9,6 +9,11 @@ return {
     { "<leader>Ptt", "<cmd>TypstPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "typst preview toggle" },
   },
   after = function()
-    require('typst-preview').setup {}
+    require('typst-preview').setup({
+      dependencies_bin = {
+        ['tinymist'] = 'tinymist',
+        ['websocat'] = 'websocat',
+      },
+    })
   end
 }
