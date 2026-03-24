@@ -58,11 +58,11 @@ vim.keymap.set("n", "<leader>fu", Snacks.picker.undo, { desc = "[U]ndo" })
 vim.keymap.set("n", "<leader>fz", Snacks.picker.zoxide, { desc = "[Z]oxide" })
 
 -- picker git keybinds
-vim.keymap.set("n", "<leader>gB", Snacks.git.blame_line, { desc = "[G]it [B]lame" })
-vim.keymap.set("n", "<leader>gb", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
-vim.keymap.set("n", "<leader>gl", Snacks.picker.git_log, { desc = "[G]it [L]og" })
+vim.keymap.set("n", "<leader>gb", Snacks.git.blame_line, { desc = "[G]it [B]lame" })
+vim.keymap.set("n", "<leader>gB", Snacks.picker.git_branches, { desc = "[G]it [B]ranch" })
+vim.keymap.set("n", "<leader>gL", Snacks.picker.git_log, { desc = "[G]it [L]og" })
 vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff" })
-vim.keymap.set("n", "<leader>gL", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
+vim.keymap.set("n", "<leader>gl", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
 
 -- setup toggles
 Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>cs")
