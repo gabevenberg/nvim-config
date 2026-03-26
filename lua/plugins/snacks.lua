@@ -36,7 +36,7 @@ require("snacks").setup({
     chunk = { enabled = true },
   },
   image = { enabled = false, inline = false, float = false },
-  lazygit = { enabled = true, configure = false },
+  lazygit = { enabled = true, configure = true},
 })
 -- setup keybinds.
 vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
