@@ -44,8 +44,8 @@ vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "Fil
 vim.keymap.set("n", "<leader>i", Snacks.image.hover, { desc = "[I]mage preview" })
 
 -- picker keybinds
-vim.keymap.set("n", "<leader>fGb", Snacks.picker.grep_buffers, { desc = "[G]rep buffers" })
-vim.keymap.set("n", "<leader>fGl", Snacks.picker.lines, { desc = "[L]ines in buffer" })
+vim.keymap.set("n", "<leader>fB", Snacks.picker.grep_buffers, { desc = "Grep [b]uffers" })
+vim.keymap.set("n", "<leader>fl", Snacks.picker.lines, { desc = "[l]ines in buffer" })
 vim.keymap.set("n", "<leader>fb", Snacks.picker.buffers, { desc = "[B]uffers" })
 vim.keymap.set("n", "<leader>ff", Snacks.picker.files, { desc = "[F]iles" })
 vim.keymap.set("n", "<leader>fg", Snacks.picker.grep, { desc = "[G]rep all" })
