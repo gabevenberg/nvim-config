@@ -106,6 +106,7 @@ require('lze').load {
   },
 
   { import = "lsp.C" },
+  { import = "lsp.clangd_extensions" },
   { import = "lsp.bash" },
   { import = "lsp.config" },
   { import = "lsp.go" },
