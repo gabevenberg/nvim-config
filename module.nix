@@ -151,6 +151,16 @@ inputs: {
     ];
   };
 
+  config.specs.conjure = {
+    after = ["general" "lazy"];
+    lazy = true;
+
+    data = with pkgs.vimPlugins; [
+      conjure
+      cmp-conjure
+    ];
+  };
+
   config.specs.zk = {
     name = "zk";
     after = ["general" "lazy"];
@@ -249,6 +259,9 @@ inputs: {
     extraPackages = with pkgs; [
       lua-language-server
       stylua
+      fennel-ls
+      fnlfmt
+      luajitPackages.fennel
     ];
   };
 
@@ -260,6 +273,7 @@ inputs: {
       rustaceanvim
     ];
     extraPackages = with pkgs; [
+      evcxr
       rust-analyzer
       cargo
     ];

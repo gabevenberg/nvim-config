@@ -42,4 +42,9 @@ return {
       },
     },
   },
+  {
+    "fennel_ls",
+    for_cat = "lua",
+    lsp={},
+  }
 }

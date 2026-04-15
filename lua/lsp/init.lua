@@ -99,6 +99,9 @@ require('lze').load {
       if nixInfo("settings", "cat", "config") then
         require("conform").formatters_by_ft.json = { "jaq" }
       end
+      if nixInfo("settings", "cat", "lua") then
+        require("conform").formatters_by_ft.fennel = { "fnlfmt" }
+      end
       if nixInfo("settings", "cat", "nix") then
         require("conform").formatters_by_ft.nix = { "alejandra" }
       end

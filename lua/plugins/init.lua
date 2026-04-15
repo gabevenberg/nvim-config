@@ -14,6 +14,7 @@ require('lze').load {
   { import = "plugins.preview.markdown", },
   { import = "plugins.preview.typst", },
   { import = "plugins.flash", },
+  { import = "plugins.conjure", },
   {
     "leap.nvim",
     for_cat = 'always',
