@@ -157,7 +157,6 @@ inputs: {
 
     data = with pkgs.vimPlugins; [
       conjure
-      cmp-conjure
     ];
   };
 
@@ -246,6 +245,16 @@ inputs: {
     extraPackages = with pkgs; [
       alejandra
       nixd
+    ];
+  };
+
+  config.specs.uiua= {
+    name = "uiua";
+    after = ["general" "lazy"];
+    lazy = true;
+    data = null;
+    extraPackages = with pkgs; [
+      uiua
     ];
   };
 

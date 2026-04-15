@@ -122,4 +122,5 @@ require('lze').load {
   { import = "lsp.typst" },
   { import = "lsp.zig" },
   { import = "lsp.zk" },
+  { import = "lsp.uiua" },
 }
