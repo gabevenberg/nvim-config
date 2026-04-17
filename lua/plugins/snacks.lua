@@ -40,6 +40,7 @@ require("snacks").setup({
 })
 -- setup keybinds.
 vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
+vim.keymap.set("n", "<leader>bD", Snacks.bufdelete.other, { desc = "delete buffer" })
 vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "File [T]ree" })
 vim.keymap.set("n", "<leader>i", Snacks.image.hover, { desc = "[I]mage preview" })
 
