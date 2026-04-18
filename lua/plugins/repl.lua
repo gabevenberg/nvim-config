@@ -31,11 +31,11 @@ return {
       "fish",
       "haskell",
       "lisp",
+      "uiua",
     },
     after = function()
       local iron = require("iron.core")
       local view = require("iron.view")
-      local filetypes = require("iron.fts")
 
       iron.setup {
         config = {
@@ -43,6 +43,9 @@ return {
           scratch_repl = true,
           -- Your repl definitions come here
           repl_definition = {
+            uiua={
+              command = {"uiua", "repl"}
+            }
           },
           repl_filetype = function(bufnr, ft)
             return ft
@@ -77,10 +80,10 @@ return {
           visual_send = "<leader>rc",
           send_file = "<leader>rf",
           send_line = "<leader>rl",
-          send_paragraph = "<leader>rp",
-          send_until_cursor = "<leader>ru",
+          -- send_paragraph = "<leader>rp",
+          -- send_until_cursor = "<leader>ru",
           send_mark = "<leader>rm",
-          send_code_block = "<leader>rb",
+          -- send_code_block = "<leader>rb",
           send_code_block_and_move = "<leader>rn",
           mark_motion = "<leader>mc",
           mark_visual = "<leader>mc",
