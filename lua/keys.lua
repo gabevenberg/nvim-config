@@ -16,10 +16,6 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
-    { desc = 'Go to previous diagnostic' })
-vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
-    { desc = 'Go to next diagnostic' })
 
 -- moving between splits
 vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'move to right split' })
@@ -33,3 +29,6 @@ vim.keymap.set({ "n", "v", "x" }, '<leader>Y', '"+yy', { noremap = true, silent 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>p', '"+p', { noremap = true, silent = true, desc = 'Paste from clipboard' })
 vim.keymap.set('i', '<C-p>', '<C-r><C-p>+',
     { noremap = true, silent = true, desc = 'Paste from clipboard from within insert mode' })
+
+-- workaround for https://github.com/neovim/neovim/issues/14061
+vim.keymap.set("ca", "wqa", "wa | qa")

@@ -9,7 +9,21 @@ require("snacks").setup({
   toggle = { enable = true },
   quickfile = { enable = true },
   scope = { enable = true },
-  statuscolumn = { enable = true },
+
+  statuscolumn = {
+    enable = true,
+    left = { "mark", "sign" }, -- priority of signs on the left (high to low)
+    right = { "fold", "git" }, -- priority of signs on the right (high to low)
+    folds = {
+      open = false,            -- show open fold icons
+      git_hl = false,          -- use Git Signs hl for fold icons
+    },
+    git = {
+      -- patterns to match Git signs
+      patterns = { "MiniDiffSign" },
+    },
+    refresh = 50, -- refresh at most every 50ms
+  },
 
   explorer = { replace_netrw = true },
   picker = {
@@ -32,15 +46,18 @@ require("snacks").setup({
   indent = {
     enabled = true,
     animate = { enabled = false },
-    scope = { enabled = true },
-    chunk = { enabled = true },
+    scope = {
+      enabled = true,
+      underline = true,
+    },
+    chunk = { enabled = true},
   },
   image = { enabled = false, inline = false, float = false },
-  lazygit = { enabled = true, configure = true},
+  lazygit = { enabled = true, configure = true },
 })
 -- setup keybinds.
 vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
-vim.keymap.set("n", "<leader>bD", Snacks.bufdelete.other, { desc = "delete buffer" })
+vim.keymap.set("n", "<leader>bD", Snacks.bufdelete.other, { desc = "delete all other buffers" })
 vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "File [T]ree" })
 vim.keymap.set("n", "<leader>i", Snacks.image.hover, { desc = "[I]mage preview" })
 
@@ -66,13 +83,14 @@ vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff
 vim.keymap.set("n", "<leader>gl", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
 
 -- setup toggles
-Snacks.toggle.option("spell", { name = "spelling" }):map("<leader>cs")
-Snacks.toggle.option("relativenumber", { name = "Relative Numbering" }):map("<leader>n")
 Snacks.toggle.dim():map("<leader>d")
 
 -- terminal keybinds
 vim.keymap.set("n", "<leader>s", function()
   Snacks.terminal.toggle(nil, { win = { position = "float" } })
+end, { desc = "terminal" })
+vim.keymap.set("n", "<leader>S", function()
+  Snacks.terminal.toggle(nil, { win = { position = "bottom" } })
 end, { desc = "terminal" })
 
 -- double tap escape leaves terminal mode

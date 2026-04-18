@@ -88,12 +88,10 @@ inputs: {
     # here we chose a DAL of plugins, but we can also pass a single plugin, or null
     data = with pkgs.vimPlugins; [
       snacks-nvim
+      mini-nvim
       lualine-nvim
-      plenary-nvim
       oil-nvim
       nvim-web-devicons
-      nvim-numbertoggle
-      marks-nvim
     ];
   };
   config.specs.lazy = {
@@ -101,12 +99,8 @@ inputs: {
     enable = lib.mkIf config.settings.minimal (lib.mkDefault true);
     lazy = true;
     data = with pkgs.vimPlugins; [
-      gitsigns-nvim
-      nvim-surround
       treesj
       which-key-nvim
-      todo-comments-nvim
-      comment-nvim
       rainbow-delimiters-nvim
       nvim-treesitter.withAllGrammars
       flash-nvim
@@ -248,7 +242,7 @@ inputs: {
     ];
   };
 
-  config.specs.uiua= {
+  config.specs.uiua = {
     name = "uiua";
     after = ["general" "lazy"];
     lazy = true;
@@ -270,7 +264,11 @@ inputs: {
       stylua
       fennel-ls
       fnlfmt
-      luajitPackages.fennel
+      (luajit.withPackages (ps:
+        with ps; [
+          luajitPackages.fennel
+          luajitPackages.readline
+        ]))
     ];
   };
 

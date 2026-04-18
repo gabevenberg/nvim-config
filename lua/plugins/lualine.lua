@@ -31,6 +31,3 @@ require("lualine").setup({
     lualine_z = { { "tabs", mode = 2 } }
   },
 })
-
--- marks.nvim
-require("marks").setup({})

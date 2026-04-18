@@ -17,13 +17,6 @@ return {
     end,
   },
   {
-    "comment.nvim",
-    for_cat = 'lazy',
-    after = function(plugin)
-      require('Comment').setup()
-    end,
-  },
-  {
     "treesj",
     for_cat = 'lazy',
     keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" }, },
