@@ -145,12 +145,14 @@ inputs: {
     ];
   };
 
-  config.specs.conjure = {
+  config.specs.repl= {
     after = ["general" "lazy"];
     lazy = true;
 
     data = with pkgs.vimPlugins; [
       conjure
+      cmp-conjure
+      iron-nvim
     ];
   };
 

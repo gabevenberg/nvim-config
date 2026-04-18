@@ -13,8 +13,12 @@ return {
         { "<leader>Pm", group = "[p]review [m]arkdown" },
         { "<leader>f",  group = "[f]ind" },
         { "<leader>t",  group = "[t]ree" },
-        { "<leader>c",  group = "[c]heck" },
         { "<leader>l",  group = "[l]sp" },
+        { "<leader>L",  group = "Conjure [L]og" },
+        { "<leader>b",  group = "[b]uffer" },
+        { "<leader>e",  group = "[e]valuate" },
+        { "<leader>r",  group = "io[r]n" },
+        { "<leader>a",  group = "surround" },
         { "<leader>lw", group = "[l]sp [w]orkspace" },
       }
     end,

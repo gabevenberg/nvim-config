@@ -1,19 +1,8 @@
-local load_w_after = function(name)
-  vim.cmd.packadd(name)
-  vim.cmd.packadd(name .. '/after')
-end
-
 return {
-  {
-    "cmp-cmdline",
-    for_cat = "lazy",
-    on_plugin = { "blink.cmp" },
-    load = load_w_after,
-  },
   {
     "blink.compat",
     for_cat = "lazy",
-    dep_of = { "cmp-cmdline" },
+    dep_of = { "cmp-conjure" },
   },
   {
     "luasnip",
@@ -65,7 +54,7 @@ return {
             -- Search forward and backward
             if type == '/' or type == '?' then return { 'buffer' } end
             -- Commands
-            if type == ':' or type == '@' then return { 'cmdline', 'cmp_cmdline' } end
+            if type == ':' or type == '@' then return { 'cmdline' } end
             return {}
           end,
         },
@@ -140,13 +129,9 @@ return {
               score_offset = 15,
               opts = { insert = true },
             },
-            cmp_cmdline = {
-              name = 'cmp_cmdline',
+            conjure = {
+              name = 'conjure',
               module = 'blink.compat.source',
-              score_offset = -100,
-              opts = {
-                cmp_name = 'cmdline',
-              },
             },
           },
         },

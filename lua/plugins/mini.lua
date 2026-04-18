@@ -89,7 +89,6 @@ require("mini.move").setup({
   },
 })
 require("mini.pairs").setup()
-require("mini.starter").setup()
 require("mini.surround").setup({
   -- Add custom surroundings to be used on top of builtin ones. For more
   -- information with examples, see `:h MiniSurround.config`.

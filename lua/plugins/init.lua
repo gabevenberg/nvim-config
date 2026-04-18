@@ -14,5 +14,5 @@ require('lze').load {
   { import = "plugins.preview.markdown", },
   { import = "plugins.preview.typst", },
   { import = "plugins.flash", },
-  { import = "plugins.conjure", },
+  { import = "plugins.repl", },
 }
