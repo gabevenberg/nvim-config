@@ -48,7 +48,7 @@ require("snacks").setup({
     animate = { enabled = false },
     scope = {
       enabled = true,
-      underline = true,
+      underline = false,
     },
     chunk = { enabled = true},
   },

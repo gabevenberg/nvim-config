@@ -21,7 +21,6 @@ return {
   {
     "iron.nvim",
     ft = {
-      "lua",
       "fennel",
       "python",
       "scheme",

@@ -296,6 +296,8 @@ inputs: {
     extraPackages = with pkgs; [
       ty
       ruff
+      python3
+      python3Packages.ipython
     ];
   };
 
