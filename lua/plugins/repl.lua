@@ -5,6 +5,7 @@ return {
     for_cat = "repl",
     after = function()
       vim.g["conjure#extract#tree_sitter#enableasd"] = true
+      vim.g["conjure#mapping#eval_visual"] = "e"
       vim.g["conjure#mapping#log_split"] = "Ls"
       vim.g["conjure#mapping#log_vsplit"] = "Lv"
       vim.g["conjure#mapping#log_tab"] = "Lt"
