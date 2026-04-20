@@ -1,6 +1,5 @@
-vim.filetype.add({ pattern = { [".*\\.ua"] = 'uiua', } })
-return {{
+return {
   "uiua",
   for_cat = "uiua",
   lsp = {},
-}}
+}

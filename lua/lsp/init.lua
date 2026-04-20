@@ -1,6 +1,7 @@
 local lspEnabled = nixInfo("settings", "cat", "lsp")
 
 if lspEnabled then
+  vim.filetype.add({ extension = { ua = "uiua", }} )
   local Snacks = require("snacks")
   vim.keymap.set("n", "<leader>lI", Snacks.picker.lsp_implementations, { desc = "Goto [I]mplementation" })
   vim.keymap.set("n", "<leader>lR", Snacks.picker.lsp_references, { desc = "Goto [R]eferences" })

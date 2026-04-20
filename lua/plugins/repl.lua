@@ -31,7 +31,6 @@ return {
       "fish",
       "haskell",
       "lisp",
-      "uiua",
     },
     after = function()
       local iron = require("iron.core")
@@ -42,14 +41,7 @@ return {
           -- Whether a repl should be discarded or not
           scratch_repl = true,
           -- Your repl definitions come here
-          repl_definition = {
-            uiua={
-              command = {"uiua", "repl"}
-            }
-          },
-          repl_filetype = function(bufnr, ft)
-            return ft
-          end,
+          repl_definition = { },
           -- Send selections to the DAP repl if an nvim-dap session is running.
           dap_integration = true,
           -- How the repl window will be displayed
