@@ -145,7 +145,7 @@ inputs: {
     ];
   };
 
-  config.specs.repl= {
+  config.specs.repl = {
     after = ["general" "lazy"];
     lazy = true;
 
@@ -292,7 +292,9 @@ inputs: {
     name = "python";
     after = ["general" "lazy"];
     lazy = true;
-    data = null;
+    data = with pkgs.vimPlugins; [
+      venv-selector-nvim
+    ];
     extraPackages = with pkgs; [
       ty
       ruff
