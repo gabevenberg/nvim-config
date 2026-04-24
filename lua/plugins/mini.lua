@@ -5,12 +5,12 @@ require("mini.basics").setup({
   -- Options. Set field to `false` to disable.
   options = {
     -- Basic options ('number', 'ignorecase', and many more)
-    basic = true,
+    basic = false,
     -- Extra UI features ('winblend', 'listchars', 'pumheight', ...)
     extra_ui = false,
     -- Presets for window borders ('single', 'double', ...)
     -- Default 'auto' infers from 'winborder' option
-    win_borders = 'auto',
+    win_borders = 'single',
   },
   -- Mappings. Set field to `false` to disable.
   mappings = {
@@ -29,7 +29,7 @@ require("mini.basics").setup({
     -- Basic autocommands (highlight on yank, start Insert in terminal, ...)
     basic = true,
     -- Set 'relativenumber' only in linewise and blockwise Visual mode
-    relnum_in_visual_mode = true,
+    relnum_in_visual_mode = false,
   },
 })
 require("mini.bracketed").setup()
@@ -97,15 +97,15 @@ require("mini.surround").setup({
   highlight_duration = 500,
   -- Module mappings. Use `''` (empty string) to disable one.
   mappings = {
-    add = '<leader>aa',        -- Add surrounding in Normal and Visual modes
-    delete = '<leader>ad',     -- Delete surrounding
-    find = '<leader>af',       -- Find surrounding (to the right)
-    find_left = '<leader>aF',  -- Find surrounding (to the left)
-    highlight = '<leader>ah',  -- Highlight surrounding
-    replace = '<leader>ar',    -- Replace surrounding
+    add = '<leader>aa',       -- Add surrounding in Normal and Visual modes
+    delete = '<leader>ad',    -- Delete surrounding
+    find = '<leader>af',      -- Find surrounding (to the right)
+    find_left = '<leader>aF', -- Find surrounding (to the left)
+    highlight = '<leader>ah', -- Highlight surrounding
+    replace = '<leader>ar',   -- Replace surrounding
 
-    suffix_last = 'l', -- Suffix to search with "prev" method
-    suffix_next = 'n', -- Suffix to search with "next" method
+    suffix_last = 'l',        -- Suffix to search with "prev" method
+    suffix_next = 'n',        -- Suffix to search with "next" method
   },
   -- Number of lines within which surrounding is searched
   n_lines = 50,
