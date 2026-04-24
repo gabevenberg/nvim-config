@@ -15,8 +15,8 @@ require("snacks").setup({
     left = { "mark", "sign" }, -- priority of signs on the left (high to low)
     right = { "fold", "git" }, -- priority of signs on the right (high to low)
     folds = {
-      open = false,            -- show open fold icons
-      git_hl = false,          -- use Git Signs hl for fold icons
+      open = false, -- show open fold icons
+      git_hl = false, -- use Git Signs hl for fold icons
     },
     git = {
       -- patterns to match Git signs
@@ -35,7 +35,7 @@ require("snacks").setup({
     },
     previewers = {
       diff = {
-        builtin = true,    -- use Neovim for previewing diffs (true) or use an external tool (false)
+        builtin = true, -- use Neovim for previewing diffs (true) or use an external tool (false)
         cmd = { "delta" }, -- example to show a diff with delta
       },
       git = {
@@ -50,7 +50,7 @@ require("snacks").setup({
       enabled = true,
       underline = false,
     },
-    chunk = { enabled = true},
+    chunk = { enabled = true },
   },
   image = { enabled = false, inline = false, float = false },
   lazygit = { enabled = true, configure = true },
@@ -58,7 +58,9 @@ require("snacks").setup({
 -- setup keybinds.
 vim.keymap.set("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "delete buffer" })
 vim.keymap.set("n", "<leader>bD", Snacks.bufdelete.other, { desc = "delete all other buffers" })
-vim.keymap.set("n", "<leader>t", function() Snacks.explorer() end, { desc = "File [T]ree" })
+vim.keymap.set("n", "<leader>t", function()
+  Snacks.explorer()
+end, { desc = "File [T]ree" })
 vim.keymap.set("n", "<leader>i", Snacks.image.hover, { desc = "[I]mage preview" })
 
 -- picker keybinds

@@ -5,13 +5,25 @@ return {
   -- it is defined in luaUtils template in lua/nixCatsUtils/lzUtils.lua
   -- you could replace this with enabled = nixCats('cat.name') == true
   -- if you didnt care to set a different default for when not using nix than the default you already set
-  for_cat = 'markdown',
-  cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle", },
+  for_cat = "markdown",
+  cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
   ft = "markdown",
   keys = {
-    { "<leader>Pmp", "<cmd>MarkdownPreview <CR>",       mode = { "n" }, noremap = true, desc = "markdown preview" },
-    { "<leader>Pms", "<cmd>MarkdownPreviewStop <CR>",   mode = { "n" }, noremap = true, desc = "markdown preview stop" },
-    { "<leader>Pmt", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown preview toggle" },
+    { "<leader>Pmp", "<cmd>MarkdownPreview <CR>", mode = { "n" }, noremap = true, desc = "markdown preview" },
+    {
+      "<leader>Pms",
+      "<cmd>MarkdownPreviewStop <CR>",
+      mode = { "n" },
+      noremap = true,
+      desc = "markdown preview stop",
+    },
+    {
+      "<leader>Pmt",
+      "<cmd>MarkdownPreviewToggle <CR>",
+      mode = { "n" },
+      noremap = true,
+      desc = "markdown preview toggle",
+    },
   },
   before = function()
     vim.g.mkdp_auto_close = 0

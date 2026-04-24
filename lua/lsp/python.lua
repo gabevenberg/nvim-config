@@ -14,10 +14,10 @@ return {
     for_cat = "python",
     ft = "python",
     keys = {
-      { "<leader>v", "<cmd>VenvSelect<CR>", mode = { "n", }, noremap = true, desc = "Venv selector" },
+      { "<leader>v", "<cmd>VenvSelect<CR>", mode = { "n" }, noremap = true, desc = "Venv selector" },
     },
-    after=function()
+    after = function()
       require("venv-selector").setup()
-    end
-  }
+    end,
+  },
 }

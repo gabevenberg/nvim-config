@@ -3,27 +3,27 @@
 return {
   {
     "nvim-treesitter",
-    for_cat = 'lazy',
+    for_cat = "lazy",
     event = "DeferredUIEnter",
     load = function(name)
       vim.cmd.packadd(name)
       vim.cmd.packadd("rainbow-delimiters.nvim")
     end,
     after = function()
-      require('nvim-treesitter').setup {
-        highlight = { enable = true, },
-        indent = { enable = false, },
-      }
+      require("nvim-treesitter").setup({
+        highlight = { enable = true },
+        indent = { enable = false },
+      })
     end,
   },
   {
     "treesj",
-    for_cat = 'lazy',
-    keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" }, },
+    for_cat = "lazy",
+    keys = { { "<leader>j", "<cmd>TSJToggle<CR>", mode = { "n" }, desc = "Treesitter join" } },
     after = function(_)
       require("treesj").setup({
-        use_default_keymaps = false
+        use_default_keymaps = false,
       })
-    end
+    end,
   },
 }

@@ -10,7 +10,7 @@ require("mini.basics").setup({
     extra_ui = false,
     -- Presets for window borders ('single', 'double', ...)
     -- Default 'auto' infers from 'winborder' option
-    win_borders = 'single',
+    win_borders = "single",
   },
   -- Mappings. Set field to `false` to disable.
   mappings = {
@@ -37,31 +37,31 @@ require("mini.comment").setup()
 require("mini.diff").setup({
   view = {
     style = "sign",
-    signs = { add = '+', change = '~', delete = '-' },
+    signs = { add = "+", change = "~", delete = "-" },
   },
   mappings = {
     -- Apply hunks inside a visual/operator region
-    apply = 'gh',
+    apply = "gh",
     -- Reset hunks inside a visual/operator region
-    reset = 'gH',
+    reset = "gH",
     -- Hunk range textobject to be used inside operator
     -- Works also in Visual mode if mapping differs from apply and reset
-    textobject = 'gh',
+    textobject = "gh",
     -- Go to hunk range in corresponding direction
-    goto_first = '[H',
-    goto_prev = '[h',
-    goto_next = ']h',
-    goto_last = ']H',
+    goto_first = "[H",
+    goto_prev = "[h",
+    goto_next = "]h",
+    goto_last = "]H",
   },
 })
 require("mini.git").setup()
 require("mini.hipatterns").setup({
   highlighters = {
     -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
-    fixme     = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
-    hack      = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
-    todo      = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
-    note      = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+    fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+    hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+    todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+    note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
 
     -- Highlight hex color strings (`#rrggbb`) using that color
     hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
@@ -71,16 +71,16 @@ require("mini.move").setup({
   -- Module mappings. Use `''` (empty string) to disable one.
   mappings = {
     -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl.
-    left = '<M-h>',
-    right = '<M-l>',
-    down = '<M-j>',
-    up = '<M-k>',
+    left = "<M-h>",
+    right = "<M-l>",
+    down = "<M-j>",
+    up = "<M-k>",
 
     -- Move current line in Normal mode
-    line_left = '<M-h>',
-    line_right = '<M-l>',
-    line_down = '<M-j>',
-    line_up = '<M-k>',
+    line_left = "<M-h>",
+    line_right = "<M-l>",
+    line_down = "<M-j>",
+    line_up = "<M-k>",
   },
   -- Options which control moving behavior
   options = {
@@ -97,15 +97,15 @@ require("mini.surround").setup({
   highlight_duration = 500,
   -- Module mappings. Use `''` (empty string) to disable one.
   mappings = {
-    add = '<leader>aa',       -- Add surrounding in Normal and Visual modes
-    delete = '<leader>ad',    -- Delete surrounding
-    find = '<leader>af',      -- Find surrounding (to the right)
-    find_left = '<leader>aF', -- Find surrounding (to the left)
-    highlight = '<leader>ah', -- Highlight surrounding
-    replace = '<leader>ar',   -- Replace surrounding
+    add = "<leader>aa", -- Add surrounding in Normal and Visual modes
+    delete = "<leader>ad", -- Delete surrounding
+    find = "<leader>af", -- Find surrounding (to the right)
+    find_left = "<leader>aF", -- Find surrounding (to the left)
+    highlight = "<leader>ah", -- Highlight surrounding
+    replace = "<leader>ar", -- Replace surrounding
 
-    suffix_last = 'l',        -- Suffix to search with "prev" method
-    suffix_next = 'n',        -- Suffix to search with "next" method
+    suffix_last = "l", -- Suffix to search with "prev" method
+    suffix_next = "n", -- Suffix to search with "next" method
   },
   -- Number of lines within which surrounding is searched
   n_lines = 50,
@@ -117,7 +117,7 @@ require("mini.surround").setup({
   -- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
   -- 'cover_or_nearest', 'next', 'prev', 'nearest'. For more details,
   -- see `:h MiniSurround.config`.
-  search_method = 'cover',
+  search_method = "cover",
   -- Whether to disable showing non-error feedback
   -- This also affects (purely informational) helper messages shown after
   -- idle time if user input is required.

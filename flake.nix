@@ -6,6 +6,10 @@
       url = "github:BirdeeHub/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     plugins-lze = {
       url = "github:BirdeeHub/lze";
       flake = false;
@@ -19,16 +23,18 @@
     self,
     nixpkgs,
     wrappers,
+    treefmt-nix,
     ...
   } @ inputs: let
     forAllSystems = nixpkgs.lib.genAttrs [
       "x86_64-linux"
       "aarch64-linux"
     ];
+    treefmtEval = forAllSystems (system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix);
     module = nixpkgs.lib.modules.importApply ./module.nix inputs;
     wrapper = wrappers.lib.evalModule module;
   in {
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
     overlays = {
       neovim = final: prev: {neovim = wrapper.config.wrap {pkgs = final;};};
       default = self.overlays.neovim;

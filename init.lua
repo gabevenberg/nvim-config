@@ -7,7 +7,9 @@ do
   ok, _G.nixInfo = pcall(require, vim.g.nix_info_plugin_name)
   if not ok then
     package.loaded[vim.g.nix_info_plugin_name] = setmetatable({}, {
-      __call = function (_, default) return default end
+      __call = function(_, default)
+        return default
+      end,
     })
     _G.nixInfo = require(vim.g.nix_info_plugin_name)
     -- If you always use the fetcher function to fetch nix values,
@@ -23,7 +25,7 @@ do
     return nixInfo(nil, "plugins", "lazy", name) or nixInfo(nil, "plugins", "start", name)
   end
 end
-nixInfo.lze.register_handlers {
+nixInfo.lze.register_handlers({
   {
     -- adds an `auto_enable` field to lze specs
     -- if true, will disable it if not installed by nix.
@@ -73,14 +75,14 @@ nixInfo.lze.register_handlers {
   -- It is (unfortunately) important that it be registered after the above 2,
   -- as it also relies on the modify hook, and the value of enabled at that point
   nixInfo.lze.lsp,
-}
+})
 
 -- NOTE: This config uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
 -- Because we have the paths, we can set a more performant fallback function
 -- for when you don"t provide a filetype to trigger on yourself.
 -- If you do provide a filetype, this will never be called.
 nixInfo.lze.h.lsp.set_ft_fallback(function(name)
-  local lspcfg = nixInfo.get_nix_plugin_path "nvim-lspconfig"
+  local lspcfg = nixInfo.get_nix_plugin_path("nvim-lspconfig")
   if lspcfg then
     local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
     return (ok and cfg or {}).filetypes or {}

@@ -1,7 +1,7 @@
 return {
   {
     "conjure",
-    ft = { "lua", "fennel", "python", "rust", "scheme", },
+    ft = { "lua", "fennel", "python", "rust", "scheme" },
     for_cat = "repl",
     after = function()
       vim.g["conjure#extract#tree_sitter#enableasd"] = true
@@ -17,7 +17,7 @@ return {
       vim.g["conjure#mapping#log_close_visible"] = "Lq"
       vim.g["conjure#client#lua#neovim#mapping#reset_env"] = "Rr"
       vim.g["conjure#client#lua#neovim#mapping#reset_all_envs"] = "Ra"
-    end
+    end,
   },
   {
     "iron.nvim",
@@ -36,17 +36,17 @@ return {
       local iron = require("iron.core")
       local view = require("iron.view")
 
-      iron.setup {
+      iron.setup({
         config = {
           -- Whether a repl should be discarded or not
           scratch_repl = true,
           -- Your repl definitions come here
-          repl_definition = { },
+          repl_definition = {},
           -- Send selections to the DAP repl if an nvim-dap session is running.
           dap_integration = true,
           -- How the repl window will be displayed
           -- See below for more information
-          repl_open_cmd = view.split.botright(.3),
+          repl_open_cmd = view.split.botright(0.3),
 
           -- repl_open_cmd can also be an array-style table so that multiple
           -- repl_open_commands can be given.
@@ -61,12 +61,11 @@ return {
           --   view.split.vertical.rightbelow("%40"), -- cmd_1: open a repl to the right
           --   view.split.rightbelow("%25")  -- cmd_2: open a repl below
           -- }
-
         },
         -- Iron doesn't set keymaps by default anymore.
         -- You can set them here or manually add keymaps to the functions in iron.core
         keymaps = {
-          toggle_repl = "<leader>rr",  -- toggles the repl open and closed.
+          toggle_repl = "<leader>rr", -- toggles the repl open and closed.
           restart_repl = "<leader>rR", -- calls `IronRestart` to restart the repl
           send_motion = "<leader>rc",
           visual_send = "<leader>rc",
@@ -88,10 +87,10 @@ return {
         -- If the highlight is on, you can change how it looks
         -- For the available options, check nvim_set_hl
         highlight = {
-          italic = true
+          italic = true,
         },
         ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
-      }
+      })
     end,
-  }
+  },
 }

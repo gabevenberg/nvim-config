@@ -7,10 +7,10 @@ return {
     cmd = { "LazyDev" },
     ft = "lua",
     after = function(_)
-      require('lazydev').setup({
+      require("lazydev").setup({
         library = {
-          { words = { "nixInfo%.lze" }, path = nixInfo("lze", "plugins", "start", "lze") .. '/lua', },
-          { words = { "nixInfo%.lze" }, path = nixInfo("lzextras", "plugins", "start", "lzextras") .. '/lua' },
+          { words = { "nixInfo%.lze" }, path = nixInfo("lze", "plugins", "start", "lze") .. "/lua" },
+          { words = { "nixInfo%.lze" }, path = nixInfo("lzextras", "plugins", "start", "lzextras") .. "/lua" },
         },
       })
     end,
@@ -25,17 +25,17 @@ return {
     -- but with a default on_attach and capabilities
     lsp = {
       -- if you provide the filetypes it doesn't ask lspconfig for the filetypes
-      filetypes = { 'lua' },
+      filetypes = { "lua" },
       settings = {
         Lua = {
-          runtime = { version = 'LuaJIT' },
+          runtime = { version = "LuaJIT" },
           formatters = {
             ignoreComments = true,
           },
           signatureHelp = { enabled = true },
           diagnostics = {
-            globals = { "nixInfo", "vim", },
-            disable = { 'missing-fields' },
+            globals = { "nixInfo", "vim" },
+            disable = { "missing-fields" },
           },
           telemetry = { enabled = false },
         },
@@ -45,6 +45,6 @@ return {
   {
     "fennel_ls",
     for_cat = "lua",
-    lsp={},
-  }
+    lsp = {},
+  },
 }

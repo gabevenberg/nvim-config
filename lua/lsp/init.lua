@@ -1,7 +1,7 @@
 local lspEnabled = nixInfo("settings", "cat", "lsp")
 
 if lspEnabled then
-  vim.filetype.add({ extension = { ua = "uiua", }} )
+  vim.filetype.add({ extension = { ua = "uiua" } })
   local Snacks = require("snacks")
   vim.keymap.set("n", "<leader>lI", Snacks.picker.lsp_implementations, { desc = "Goto [I]mplementation" })
   vim.keymap.set("n", "<leader>lR", Snacks.picker.lsp_references, { desc = "Goto [R]eferences" })
@@ -11,14 +11,15 @@ if lspEnabled then
 
   vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, { desc = "Goto [D]eclaration" })
   vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, { desc = "Type [D]efinition" })
-  vim.keymap.set({ "n", "v", }, "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
+  vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, { desc = "[C]ode Action" })
   vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, { desc = "Goto [D]efinition" })
   vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover Documentation" })
   vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "[R]ename" })
   vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
   vim.keymap.set("n", "<leader>lwa", vim.lsp.buf.add_workspace_folder, { desc = "[W]orkspace [A]dd Folder" })
-  vim.keymap.set("n", "<leader>lwl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
-    { desc = "[W]orkspace [L]ist Folders" })
+  vim.keymap.set("n", "<leader>lwl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, { desc = "[W]orkspace [L]ist Folders" })
   vim.keymap.set("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder, { desc = "[W]orkspace [R]emove Folder" })
 
   -- setup lsp progress notifications
@@ -26,8 +27,7 @@ if lspEnabled then
   vim.api.nvim_create_autocmd("LspProgress", {
     callback = function(ev)
       local client = vim.lsp.get_client_by_id(ev.data.client_id)
-      local value = ev.data.params
-          .value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+      local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
       if not client or type(value) ~= "table" then
         return
       end
@@ -59,14 +59,14 @@ if lspEnabled then
         title = client.name,
         opts = function(notif)
           notif.icon = #progress[client.id] == 0 and " "
-              or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
         end,
       })
     end,
   })
 end
 
-require('lze').load {
+require("lze").load({
   {
     "nvim-lspconfig",
     for_cat = "lsp",
@@ -88,7 +88,14 @@ require('lze').load {
     on_require = { "conform" },
     cmd = { "ConformInfo" },
     keys = {
-      { "<leader>lf", function() require("conform").format({ async = true }) end, mode = { "" }, desc = "Format buffer" },
+      {
+        "<leader>lf",
+        function()
+          require("conform").format({ async = true })
+        end,
+        mode = { "" },
+        desc = "Format buffer",
+      },
     },
     after = function()
       require("conform").setup({
@@ -124,4 +131,4 @@ require('lze').load {
   { import = "lsp.zig" },
   { import = "lsp.zk" },
   { import = "lsp.uiua" },
-}
+})

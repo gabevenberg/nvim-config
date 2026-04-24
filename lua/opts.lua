@@ -15,7 +15,7 @@ vim.o.exrc = false -- can be toggled off in that file to stop it from searching 
 --  and `:help "showbreak"`
 vim.opt.list = true
 vim.opt.listchars = { eol = "↲", extends = "⟩", nbsp = "␣", precedes = "⟨", tab = ">-", trail = "•" }
-vim.opt.showbreak = "↪";
+vim.opt.showbreak = "↪"
 
 -- Set highlight on search
 vim.opt.hlsearch = true
@@ -43,7 +43,7 @@ vim.opt.textwidth = 0
 vim.opt.wrapmargin = 0
 
 -- get nice visual guides for 80, 100, and 120 cols.
-vim.opt.colorcolumn = { "90", "100", "120", }
+vim.opt.colorcolumn = { "90", "100", "120" }
 
 -- Indent
 vim.opt.smarttab = true
@@ -86,5 +86,5 @@ vim.opt.formatoptions = "rojq"
 vim.g.netrw_liststyle = 0
 vim.g.netrw_banner = 0
 
-vim.g.netrw_liststyle=0
-vim.g.netrw_banner=0
+vim.g.netrw_liststyle = 0
+vim.g.netrw_banner = 0
