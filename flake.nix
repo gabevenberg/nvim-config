@@ -26,15 +26,22 @@
     treefmt-nix,
     ...
   } @ inputs: let
-    forAllSystems = nixpkgs.lib.genAttrs [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
-    treefmtEval = forAllSystems (system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix);
+    forAllSystems = function:
+      nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+      ] (system:
+        function {
+          pkgs = import nixpkgs {inherit system;};
+          inherit system;
+        });
+
+    treefmtEval = forAllSystems ({pkgs, ...}: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
     module = nixpkgs.lib.modules.importApply ./module.nix inputs;
     wrapper = wrappers.lib.evalModule module;
   in {
-    formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
+    formatter = forAllSystems ({system, ...}: treefmtEval.${system}.config.build.wrapper);
+
     overlays = {
       neovim = final: prev: {neovim = wrapper.config.wrap {pkgs = final;};};
       default = self.overlays.neovim;
@@ -48,10 +55,12 @@
       default = self.wrappers.neovim;
     };
     packages = forAllSystems (
-      system: let
-        pkgs = import nixpkgs {inherit system;};
-      in {
+      {pkgs, system}: {
         neovim = wrapper.config.wrap {inherit pkgs;};
+        minimal = wrapper.config.wrap {
+          settings.minimal = true;
+          inherit pkgs;
+        };
         default = self.packages.${system}.neovim;
       }
     );
