@@ -105,7 +105,7 @@ require("lze").load({
       })
       -- need to figure out how to properly seperate this.
       if nixInfo("settings", "cat", "config") then
-        require("conform").formatters_by_ft.json = { "jaq" }
+        require("conform").formatters_by_ft.json = { "jq" }
       end
       if nixInfo("settings", "cat", "lua") then
         require("conform").formatters_by_ft.fennel = { "fnlfmt" }
