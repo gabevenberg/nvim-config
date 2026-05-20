@@ -102,7 +102,7 @@ vim.keymap.set("t", "<esc>", function(self)
     self.esc_timer:stop()
     vim.cmd("stopinsert")
   else
-    self.esc_timer:start(200, 0, function() end)
+    self.esc_timer:start(500, 0, function() end)
     return "<esc>"
   end
 end, { expr = true, desc = "Double tap to escape terminal" })
