@@ -4,9 +4,7 @@ A wrapper around nvim that includes the plugins I use day to day.
 
 to use with home manager or nixos, pass this flake as an input, and then in your config,
 ```nix
-imports = [
-inputs.nvim-config.nixosModules.neovim
-]
+imports = [inputs.nvim-config.nixosModules.neovim]
 ```
 (replace `nixosModules` with `homeModules` for home manager).
 

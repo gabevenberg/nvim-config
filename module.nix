@@ -75,7 +75,7 @@ inputs: {
     # If we provided any from within either spec, anyway
     after = ["lze"];
     enable = lib.mkIf config.settings.minimal (lib.mkDefault true);
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       ripgrep
       fd
       fzf
@@ -126,7 +126,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       markdown-preview-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       mermaid-cli
       imagemagick
       texliveSmall
@@ -163,7 +163,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       zk-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       zk
     ];
   };
@@ -175,7 +175,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       typst-preview-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       typst
       tinymist
       websocat
@@ -187,7 +187,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       gopls
     ];
   };
@@ -197,7 +197,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       taplo
       jq
       yaml-language-server
@@ -209,7 +209,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       jsonnet-language-server
     ];
   };
@@ -219,7 +219,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       zls
     ];
   };
@@ -228,7 +228,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       nushell
     ];
   };
@@ -238,7 +238,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       alejandra
       nixd
     ];
@@ -249,7 +249,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       uiua
     ];
   };
@@ -261,7 +261,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       lazydev-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       lua-language-server
       stylua
       fennel-ls
@@ -281,7 +281,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       rustaceanvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       evcxr
       rust-analyzer
       cargo
@@ -295,7 +295,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       venv-selector-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       ty
       ruff
       python3
@@ -310,7 +310,7 @@ inputs: {
     data = with pkgs.vimPlugins; [
       clangd_extensions-nvim
     ];
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       libclang
     ];
   };
@@ -320,7 +320,7 @@ inputs: {
     after = ["general" "lazy"];
     lazy = true;
     data = null;
-    extraPackages = with pkgs; [
+    runtimePkgs = with pkgs; [
       shellcheck
       bash-language-server
     ];
@@ -328,10 +328,10 @@ inputs: {
 
   config.specMods = lib.mkMerge [
     {
-      options.extraPackages = lib.mkOption {
+      options.runtimePkgs = lib.mkOption {
         type = lib.types.listOf wlib.types.stringable;
         default = [];
-        description = "a extraPackages spec field to put packages to suffix to the PATH";
+        description = "a runtimePkgs spec field to put packages to suffix to the PATH";
       };
     }
     # Makes enable be false by default if minimal is set.
@@ -342,7 +342,7 @@ inputs: {
     ))
   ];
 
-  config.extraPackages = config.specCollect (acc: v: acc ++ (v.extraPackages or [])) [];
+  config.runtimePkgs = config.specCollect (acc: v: acc ++ (v.runtimePkgs or [])) [];
   # Inform our lua of which top level specs are enabled
   options.settings.cats = lib.mkOption {
     readOnly = true;

@@ -1,6 +1,10 @@
 local lspEnabled = nixInfo("settings", "cat", "lsp")
 
 if lspEnabled then
+  vim.diagnostic.config {
+    virtual_text = false,
+    virtual_lines = true,
+  }
   vim.filetype.add({ extension = { ua = "uiua" } })
   local Snacks = require("snacks")
   vim.keymap.set("n", "<leader>lI", Snacks.picker.lsp_implementations, { desc = "Goto [I]mplementation" })
@@ -21,13 +25,20 @@ if lspEnabled then
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { desc = "[W]orkspace [L]ist Folders" })
   vim.keymap.set("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder, { desc = "[W]orkspace [R]emove Folder" })
+  vim.keymap.set('n', '<leader>lv', function()
+      vim.diagnostic.config {
+        virtual_lines = not vim.diagnostic.config().virtual_lines,
+      }
+    end,
+    { desc = "Toggle Lsp [V]irtual Lines" })
 
   -- setup lsp progress notifications
   local progress = vim.defaulttable()
   vim.api.nvim_create_autocmd("LspProgress", {
     callback = function(ev)
       local client = vim.lsp.get_client_by_id(ev.data.client_id)
-      local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+      local value = ev.data.params
+          .value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
       if not client or type(value) ~= "table" then
         return
       end
@@ -59,12 +70,42 @@ if lspEnabled then
         title = client.name,
         opts = function(notif)
           notif.icon = #progress[client.id] == 0 and " "
-            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+              or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
         end,
       })
     end,
   })
 end
+
+-- Disable lsp-lines and inlay hints in insert mode
+local lsp_lines_helper = vim.api.nvim_create_augroup('LspLinesHelper', {})
+local last_lsp_lines_status = true
+vim.api.nvim_create_autocmd('InsertEnter', {
+  group = lsp_lines_helper,
+  pattern = "*",
+  callback = function()
+    vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+    last_lsp_lines_status = vim.diagnostic.config().virtual_lines
+    vim.diagnostic.config {
+      virtual_text = false,
+      virtual_lines = false,
+    }
+    -- To update cursor position
+    vim.cmd [[ normal "hl" ]]
+  end
+})
+vim.api.nvim_create_autocmd('InsertLeave', {
+  group = lsp_lines_helper,
+  pattern = "*",
+  callback = function()
+    vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
+    vim.diagnostic.config {
+      virtual_text = false,
+      virtual_lines = last_lsp_lines_status,
+    }
+  end
+})
+
 
 require("lze").load({
   {
