@@ -125,6 +125,7 @@ inputs: {
     lazy = true;
     data = with pkgs.vimPlugins; [
       markdown-preview-nvim
+      render-markdown-nvim
     ];
     runtimePkgs = with pkgs; [
       mermaid-cli
