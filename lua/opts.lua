@@ -17,6 +17,9 @@ vim.opt.list = true
 vim.opt.listchars = { eol = "↲", extends = "⟩", nbsp = "␣", precedes = "⟨", tab = ">-", trail = "•" }
 vim.opt.showbreak = "↪"
 
+-- turn off modeline (commands embedded in the file) for security
+vim.opt.modeline = false
+
 -- Set highlight on search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
