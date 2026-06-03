@@ -84,6 +84,7 @@ vim.api.nvim_create_autocmd('InsertEnter', {
   group = lsp_lines_helper,
   pattern = "*",
   callback = function()
+    if next(vim.lsp.get_clients()) == nil then
     vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
     last_lsp_lines_status = vim.diagnostic.config().virtual_lines
     vim.diagnostic.config {
@@ -92,6 +93,7 @@ vim.api.nvim_create_autocmd('InsertEnter', {
     }
     -- To update cursor position
     vim.cmd [[ normal "hl" ]]
+  end
   end
 })
 vim.api.nvim_create_autocmd('InsertLeave', {
