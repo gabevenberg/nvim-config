@@ -312,7 +312,7 @@ inputs: {
       clangd_extensions-nvim
     ];
     runtimePkgs = with pkgs; [
-      libclang
+      clang-tools
     ];
   };
 
