@@ -88,7 +88,36 @@ require("mini.move").setup({
     reindent_linewise = true,
   },
 })
-require("mini.pairs").setup()
+require("mini.pairs").setup({
+  -- In which modes mappings from this `config` should be created
+  modes = { insert = true, command = false, terminal = false },
+
+  -- Global mappings. Each right hand side should be a pair information, a
+  -- table with at least these fields (see more in |MiniPairs.map()|):
+  -- - <action> - one of "open", "close", "closeopen".
+  -- - <pair> - two character string for pair to be used.
+  -- By default pair is not inserted after `\`, quotes are not recognized by
+  -- <CR>, `'` does not insert the pair after a letter.
+  -- Only parts of tables can be tweaked (others will use these defaults).
+  -- Supply `false` instead of table to not map particular key.
+  mappings = {
+    ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\]' },
+    ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\]' },
+    ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\]' },
+
+    [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
+    [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
+    ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
+
+    ['"'] = false,
+    ["'"] = false,
+    ['`'] = false,
+
+    -- ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\]', register = { cr = false } },
+    -- ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^%a\\]', register = { cr = false } },
+    -- ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\]', register = { cr = false } },
+  },
+})
 require("mini.surround").setup({
   -- Add custom surroundings to be used on top of builtin ones. For more
   -- information with examples, see `:h MiniSurround.config`.
@@ -97,15 +126,15 @@ require("mini.surround").setup({
   highlight_duration = 500,
   -- Module mappings. Use `''` (empty string) to disable one.
   mappings = {
-    add = "<leader>aa", -- Add surrounding in Normal and Visual modes
-    delete = "<leader>ad", -- Delete surrounding
-    find = "<leader>af", -- Find surrounding (to the right)
+    add = "<leader>aa",       -- Add surrounding in Normal and Visual modes
+    delete = "<leader>ad",    -- Delete surrounding
+    find = "<leader>af",      -- Find surrounding (to the right)
     find_left = "<leader>aF", -- Find surrounding (to the left)
     highlight = "<leader>ah", -- Highlight surrounding
-    replace = "<leader>ar", -- Replace surrounding
+    replace = "<leader>ar",   -- Replace surrounding
 
-    suffix_last = "l", -- Suffix to search with "prev" method
-    suffix_next = "n", -- Suffix to search with "next" method
+    suffix_last = "l",        -- Suffix to search with "prev" method
+    suffix_next = "n",        -- Suffix to search with "next" method
   },
   -- Number of lines within which surrounding is searched
   n_lines = 50,
