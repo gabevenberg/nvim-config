@@ -7,7 +7,7 @@ vim.g.maplocalleader = ";"
 -- NOTE: You can change these options as you wish!
 
 -- allow .nvim.lua in current dir and parents (project config)
-vim.o.exrc = false -- can be toggled off in that file to stop it from searching further
+-- vim.o.exrc = false -- can be toggled off in that file to stop it from searching further
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help "list"`

@@ -85,15 +85,15 @@ vim.api.nvim_create_autocmd('InsertEnter', {
   pattern = "*",
   callback = function()
     if next(vim.lsp.get_clients()) == nil then
-    vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
-    last_lsp_lines_status = vim.diagnostic.config().virtual_lines
-    vim.diagnostic.config {
-      virtual_text = false,
-      virtual_lines = false,
-    }
-    -- To update cursor position
-    vim.cmd [[ normal "hl" ]]
-  end
+      vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
+      last_lsp_lines_status = vim.diagnostic.config().virtual_lines
+      vim.diagnostic.config {
+        virtual_text = false,
+        virtual_lines = false,
+      }
+      -- To update cursor position
+      vim.cmd [[ normal "hl" ]]
+    end
   end
 })
 vim.api.nvim_create_autocmd('InsertLeave', {
@@ -109,6 +109,7 @@ vim.api.nvim_create_autocmd('InsertLeave', {
 })
 
 
+
 require("lze").load({
   {
     "nvim-lspconfig",
@@ -122,6 +123,33 @@ require("lze").load({
     lsp = function(plugin)
       vim.lsp.config(plugin.name, plugin.lsp or {})
       vim.lsp.enable(plugin.name)
+    end,
+  },
+
+  {
+    "codesettings.nvim",
+    after = function()
+      require("codesettings").setup({
+        opts = {
+          config_file_paths = { '.vscode/settings.json', 'codesettings.json', 'lspsettings.json' },
+          jsonc_filetype = true,
+          jsonls_integration = true,
+          live_reload = false,
+          --- List of loader extensions to use when loading settings; `string` values will be `require`d
+          loader_extensions = { 'codesettings.extensions.vscode' },
+          lua_ls_integration = true,
+          --- How to merge lists; 'append' (default), 'prepend' or 'replace'
+          merge_lists = 'append',
+          root_dir = nil,
+        },
+      })
+
+      vim.lsp.config('*', {
+        before_init = function(_, config)
+          local codesettings = require('codesettings')
+          codesettings.with_local_settings(config.name, config)
+        end,
+      })
     end,
   },
 

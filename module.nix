@@ -139,6 +139,7 @@ inputs: {
     lazy = true;
 
     data = with pkgs.vimPlugins; [
+      codesettings-nvim
       trouble-nvim
       lualine-lsp-progress
       nvim-lspconfig
