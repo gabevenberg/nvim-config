@@ -145,6 +145,10 @@ inputs: {
       nvim-lspconfig
       conform-nvim
     ];
+    runtimePkgs = with pkgs; [
+      typos-lsp
+      harper
+    ];
   };
 
   config.specs.repl = {

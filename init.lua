@@ -81,14 +81,17 @@ nixInfo.lze.register_handlers({
 -- Because we have the paths, we can set a more performant fallback function
 -- for when you don"t provide a filetype to trigger on yourself.
 -- If you do provide a filetype, this will never be called.
+-- Returning nil (not {}) for an lsp with no filetypes, like typos_lsp,
+-- makes lzextras load it at startup so it attaches to every buffer.
+-- An empty list would register zero triggers and it would never load.
 nixInfo.lze.h.lsp.set_ft_fallback(function(name)
   local lspcfg = nixInfo.get_nix_plugin_path("nvim-lspconfig")
   if lspcfg then
     local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
-    return (ok and cfg or {}).filetypes or {}
+    return (ok and cfg or {}).filetypes
   else
     -- the less performant thing we are trying to avoid at startup
-    return (vim.lsp.config[name] or {}).filetypes or {}
+    return (vim.lsp.config[name] or {}).filetypes
   end
 end)
 

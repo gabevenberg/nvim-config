@@ -1,0 +1,5 @@
+[default]
+# keymap descriptions use a [D]efinition mnemonic convention,
+# and typos reads the tail as a misspelling of the whole word.
+# without this it rewrites [S]ymbols to [S]symbols.
+extend-ignore-re = ['\[[A-Za-z]\][a-zA-Z]*']

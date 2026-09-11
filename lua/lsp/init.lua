@@ -1,10 +1,10 @@
 local lspEnabled = nixInfo("settings", "cat", "lsp")
 
 if lspEnabled then
-  vim.diagnostic.config {
+  vim.diagnostic.config({
     virtual_text = false,
     virtual_lines = true,
-  }
+  })
   vim.filetype.add({ extension = { ua = "uiua" } })
   local Snacks = require("snacks")
   vim.keymap.set("n", "<leader>lI", Snacks.picker.lsp_implementations, { desc = "Goto [I]mplementation" })
@@ -25,20 +25,18 @@ if lspEnabled then
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { desc = "[W]orkspace [L]ist Folders" })
   vim.keymap.set("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder, { desc = "[W]orkspace [R]emove Folder" })
-  vim.keymap.set('n', '<leader>lv', function()
-      vim.diagnostic.config {
-        virtual_lines = not vim.diagnostic.config().virtual_lines,
-      }
-    end,
-    { desc = "Toggle Lsp [V]irtual Lines" })
+  vim.keymap.set("n", "<leader>lv", function()
+    vim.diagnostic.config({
+      virtual_lines = not vim.diagnostic.config().virtual_lines,
+    })
+  end, { desc = "Toggle Lsp [V]irtual Lines" })
 
   -- setup lsp progress notifications
   local progress = vim.defaulttable()
   vim.api.nvim_create_autocmd("LspProgress", {
     callback = function(ev)
       local client = vim.lsp.get_client_by_id(ev.data.client_id)
-      local value = ev.data.params
-          .value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+      local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
       if not client or type(value) ~= "table" then
         return
       end
@@ -70,7 +68,7 @@ if lspEnabled then
         title = client.name,
         opts = function(notif)
           notif.icon = #progress[client.id] == 0 and " "
-              or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
         end,
       })
     end,
@@ -78,37 +76,35 @@ if lspEnabled then
 end
 
 -- Disable lsp-lines and inlay hints in insert mode
-local lsp_lines_helper = vim.api.nvim_create_augroup('LspLinesHelper', {})
+local lsp_lines_helper = vim.api.nvim_create_augroup("LspLinesHelper", {})
 local last_lsp_lines_status = true
-vim.api.nvim_create_autocmd('InsertEnter', {
+vim.api.nvim_create_autocmd("InsertEnter", {
   group = lsp_lines_helper,
   pattern = "*",
   callback = function()
     if next(vim.lsp.get_clients()) == nil then
       vim.lsp.inlay_hint.enable(false, { bufnr = 0 })
       last_lsp_lines_status = vim.diagnostic.config().virtual_lines
-      vim.diagnostic.config {
+      vim.diagnostic.config({
         virtual_text = false,
         virtual_lines = false,
-      }
+      })
       -- To update cursor position
-      vim.cmd [[ normal "hl" ]]
+      vim.cmd([[ normal "hl" ]])
     end
-  end
+  end,
 })
-vim.api.nvim_create_autocmd('InsertLeave', {
+vim.api.nvim_create_autocmd("InsertLeave", {
   group = lsp_lines_helper,
   pattern = "*",
   callback = function()
     vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
-    vim.diagnostic.config {
+    vim.diagnostic.config({
       virtual_text = false,
       virtual_lines = last_lsp_lines_status,
-    }
-  end
+    })
+  end,
 })
-
-
 
 require("lze").load({
   {
@@ -131,22 +127,22 @@ require("lze").load({
     after = function()
       require("codesettings").setup({
         opts = {
-          config_file_paths = { '.vscode/settings.json', 'codesettings.json', 'lspsettings.json' },
+          config_file_paths = { ".vscode/settings.json", "codesettings.json", "lspsettings.json" },
           jsonc_filetype = true,
           jsonls_integration = true,
           live_reload = false,
           --- List of loader extensions to use when loading settings; `string` values will be `require`d
-          loader_extensions = { 'codesettings.extensions.vscode' },
+          loader_extensions = { "codesettings.extensions.vscode" },
           lua_ls_integration = true,
           --- How to merge lists; 'append' (default), 'prepend' or 'replace'
-          merge_lists = 'append',
+          merge_lists = "append",
           root_dir = nil,
         },
       })
 
-      vim.lsp.config('*', {
+      vim.lsp.config("*", {
         before_init = function(_, config)
-          local codesettings = require('codesettings')
+          local codesettings = require("codesettings")
           codesettings.with_local_settings(config.name, config)
         end,
       })
@@ -174,7 +170,7 @@ require("lze").load({
           lsp_format = "fallback",
         },
       })
-      -- need to figure out how to properly seperate this.
+      -- need to figure out how to properly separate this.
       if nixInfo("settings", "cat", "config") then
         require("conform").formatters_by_ft.json = { "jq" }
       end
@@ -192,12 +188,14 @@ require("lze").load({
   { import = "lsp.bash" },
   { import = "lsp.config" },
   { import = "lsp.go" },
+  { import = "lsp.harper" },
   { import = "lsp.jsonnet" },
   { import = "lsp.lua" },
   { import = "lsp.nix" },
   { import = "lsp.nushell" },
   { import = "lsp.python" },
   { import = "lsp.rust" },
+  { import = "lsp.typos" },
   { import = "lsp.typst" },
   { import = "lsp.zig" },
   { import = "lsp.zk" },

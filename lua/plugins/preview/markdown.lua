@@ -5,7 +5,13 @@ return {
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
     ft = "markdown",
     keys = {
-      { "<leader>Pmw", "<cmd>MarkdownPreviewToggle <CR>", mode = { "n" }, noremap = true, desc = "markdown web preview toggle", },
+      {
+        "<leader>Pmw",
+        "<cmd>MarkdownPreviewToggle <CR>",
+        mode = { "n" },
+        noremap = true,
+        desc = "markdown web preview toggle",
+      },
     },
     before = function()
       vim.g.mkdp_auto_close = 0
@@ -17,10 +23,18 @@ return {
     cmd = { "RenderMarkdown" },
     ft = "markdown",
     keys = {
-      { "<leader>Pmp", function() require("render-markdown").set() end,     mode = { "n" }, noremap = true, desc = "markdown render toggle", },
+      {
+        "<leader>Pmp",
+        function()
+          require("render-markdown").set()
+        end,
+        mode = { "n" },
+        noremap = true,
+        desc = "markdown render toggle",
+      },
     },
     after = function()
-      require('render-markdown').setup({})
+      require("render-markdown").setup({})
     end,
-  }
+  },
 }
