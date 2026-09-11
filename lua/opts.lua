@@ -77,7 +77,7 @@ vim.opt.completeopt = { "menu", "preview", "noselect" }
 
 vim.opt.termguicolors = true
 
--- disable unneded files
+-- disable unneeded files
 vim.opt.swapfile = false
 
 -- [[ Disable auto comment on enter ]]
@@ -85,6 +85,27 @@ vim.opt.swapfile = false
 
 -- set options for auto-commenting and using gq
 vim.opt.formatoptions = "rojq"
+
+-- use semantic line breaks for gq in prose. not wired up globally, because the
+-- formatexpr does not understand // or -- comment leaders.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "typst", "tex", "text", "gitcommit", "asciidoc", "rst" },
+  callback = function()
+    vim.opt_local.formatexpr = "v:lua.require'sembr'.formatexpr()"
+  end,
+})
+
+-- spellcheck is on everywhere, but 'noplainbuffer' limits it to the regions
+-- treesitter marks as @spell, so in code only comments and docstrings get checked.
+-- 'camel' splits isPalindrome into is + Palindrome instead of one unknown word.
+vim.opt.spell = true
+vim.opt.spelllang = { "en" }
+vim.opt.spelloptions = { "camel", "noplainbuffer" }
+
+-- keep the zg word list in Sync so it is the same on every machine.
+local spelldir = vim.env.HOME .. "/Sync/.spell"
+vim.fn.mkdir(spelldir, "p")
+vim.opt.spellfile = spelldir .. "/en.utf-8.add"
 
 vim.g.netrw_liststyle = 0
 vim.g.netrw_banner = 0

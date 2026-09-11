@@ -6,7 +6,7 @@ return {
       filetypes = { "typst" },
       settings = {
         formatterMode = "typstyle",
-        lineWidth = 120
+        lineWidth = 120,
       },
     },
   },
