@@ -188,7 +188,7 @@ require("lze").load({
   { import = "lsp.bash" },
   { import = "lsp.config" },
   { import = "lsp.go" },
-  { import = "lsp.harper" },
+  -- { import = "lsp.harper" },
   { import = "lsp.jsonnet" },
   { import = "lsp.lua" },
   { import = "lsp.nix" },

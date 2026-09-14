@@ -147,7 +147,7 @@ inputs: {
     ];
     runtimePkgs = with pkgs; [
       typos-lsp
-      harper
+      # harper
     ];
   };
 
