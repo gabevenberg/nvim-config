@@ -46,7 +46,7 @@ vim.opt.textwidth = 0
 vim.opt.wrapmargin = 0
 
 -- get nice visual guides for 80, 100, and 120 cols.
-vim.opt.colorcolumn = { "90", "100", "120" }
+vim.opt.colorcolumn = { "80", "100", "120" }
 
 -- Indent
 vim.opt.smarttab = true
