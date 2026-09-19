@@ -15,4 +15,5 @@ require("lze").load({
   { import = "plugins.preview.typst" },
   { import = "plugins.flash" },
   { import = "plugins.repl" },
+  { import = "plugins.debug" },
 })

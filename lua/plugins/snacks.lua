@@ -85,7 +85,7 @@ vim.keymap.set("n", "<leader>gd", Snacks.picker.git_diff, { desc = "[G]it [D]iff
 vim.keymap.set("n", "<leader>gl", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI" })
 
 -- setup toggles
-Snacks.toggle.dim():map("<leader>d")
+Snacks.toggle.dim():map("<leader>D")
 
 -- terminal keybinds
 vim.keymap.set("n", "<leader>s", function()

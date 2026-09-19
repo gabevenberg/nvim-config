@@ -16,8 +16,8 @@ return {
         { "<leader>l", group = "[l]sp" },
         { "<leader>L", group = "Conjure [L]og" },
         { "<leader>b", group = "[b]uffer" },
+        { "<leader>d", group = "[d]ebug" },
         { "<leader>e", group = "[e]valuate" },
-        { "<leader>r", group = "io[r]n" },
         { "<leader>a", group = "surround" },
         { "<leader>lw", group = "[l]sp [w]orkspace" },
       })

@@ -58,12 +58,21 @@ nixInfo.lze.register_handlers({
   {
     -- we made an options.settings.cats with the value of enable for our top level specs
     -- give for_cat = "name" to disable if that one is not enabled
+    -- give for_cat = { "name", "other" } to disable if any of them are not enabled
     spec_field = "for_cat",
     set_lazy = false,
     modify = function(plugin)
       if vim.g.nix_info_plugin_name then
         if type(plugin.for_cat) == "string" then
           plugin.enabled = nixInfo(false, "settings", "cats", plugin.for_cat)
+        elseif type(plugin.for_cat) == "table" then
+          plugin.enabled = true
+          for _, cat in ipairs(plugin.for_cat) do
+            if not nixInfo(false, "settings", "cats", cat) then
+              plugin.enabled = false
+              break
+            end
+          end
         end
       end
       return plugin

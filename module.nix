@@ -158,7 +158,15 @@ inputs: {
     data = with pkgs.vimPlugins; [
       conjure
       cmp-conjure
-      iron-nvim
+    ];
+  };
+
+  config.specs.debug = {
+    after = ["general" "lazy"];
+    lazy = true;
+    data = with pkgs.vimPlugins; [
+      nvim-dap
+      nvim-dap-view
     ];
   };
 
@@ -192,7 +200,14 @@ inputs: {
     name = "go";
     after = ["general" "lazy"];
     lazy = true;
-    data = null;
+    data = [
+      {
+        data = pkgs.vimPlugins.nvim-dap-go;
+        # both, because an enabled child is installed even when its parent spec is disabled
+        enable = config.specs.debug.enable && config.specs.go.enable;
+        runtimePkgs = [pkgs.delve];
+      }
+    ];
     runtimePkgs = with pkgs; [
       gopls
     ];
@@ -286,6 +301,13 @@ inputs: {
     lazy = true;
     data = with pkgs.vimPlugins; [
       rustaceanvim
+      {
+        data = nvim-dap-disasm;
+        # both, because an enabled child is installed even when its parent spec is disabled
+        enable = config.specs.debug.enable && config.specs.rust.enable;
+        # the embedded debug server comes from the project's devshell
+        runtimePkgs = [pkgs.gdb];
+      }
     ];
     runtimePkgs = with pkgs; [
       evcxr
@@ -300,6 +322,12 @@ inputs: {
     lazy = true;
     data = with pkgs.vimPlugins; [
       venv-selector-nvim
+      {
+        data = nvim-dap-python;
+        # both, because an enabled child is installed even when its parent spec is disabled
+        enable = config.specs.debug.enable && config.specs.python.enable;
+        runtimePkgs = [pkgs.python3Packages.debugpy];
+      }
     ];
     runtimePkgs = with pkgs; [
       ty
@@ -315,6 +343,12 @@ inputs: {
     lazy = true;
     data = with pkgs.vimPlugins; [
       clangd_extensions-nvim
+      {
+        data = nvim-dap-disasm;
+        # both, because an enabled child is installed even when its parent spec is disabled
+        enable = config.specs.debug.enable && config.specs.C.enable;
+        runtimePkgs = [pkgs.gdb];
+      }
     ];
     runtimePkgs = with pkgs; [
       clang-tools
