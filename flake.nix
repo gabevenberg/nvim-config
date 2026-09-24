@@ -42,6 +42,19 @@
   in {
     formatter = forAllSystems ({system, ...}: treefmtEval.${system}.config.build.wrapper);
 
+    checks = forAllSystems ({pkgs, ...}: {
+      # the vim-free half of lua/sembr, which is everything that can be tested
+      # without a running editor.
+      sembr = pkgs.runCommand "sembr-tests" {nativeBuildInputs = [pkgs.luajit];} ''
+        mkdir -p src
+        cp -r ${./lua} src/lua
+        cp -r ${./tests} src/tests
+        cd src
+        luajit tests/sembr.lua
+        touch $out
+      '';
+    });
+
     overlays = {
       neovim = final: prev: {neovim = wrapper.config.wrap {pkgs = final;};};
       default = self.overlays.neovim;

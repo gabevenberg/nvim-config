@@ -88,6 +88,12 @@ vim.opt.swapfile = false
 -- set options for auto-commenting and using gq
 vim.opt.formatoptions = "rojq"
 
+-- gq reflows prose at semantic line breaks instead of greedily filling to
+-- 'textwidth'. The string form loads lua/sembr on the first gq rather than at
+-- startup, and setting it here is also what stops nvim installing the LSP
+-- formatexpr over it; sembr hands a non-prose range back to the LSP itself.
+vim.o.formatexpr = "v:lua.require'sembr'.formatexpr()"
+
 -- spellcheck is on everywhere, but 'noplainbuffer' limits it to the regions
 -- treesitter marks as @spell, so in code only comments and docstrings get checked.
 vim.opt.spell = true
