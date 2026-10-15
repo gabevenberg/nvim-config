@@ -23,6 +23,9 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "move to below split" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "move to left split" })
 
+-- <C-k> is taken by blink's signature toggle in insert mode
+vim.keymap.set({ "i", "c" }, "<C-q>", "<C-k>", { noremap = true, desc = "Enter digraph" })
+
 -- You should instead use these keybindings so that they are still easy to use, but dont conflict
 vim.keymap.set({ "v", "x", "n" }, "<leader>y", '"+y', { noremap = true, silent = true, desc = "Yank to clipboard" })
 vim.keymap.set(

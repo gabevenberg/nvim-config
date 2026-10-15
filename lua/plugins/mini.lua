@@ -157,5 +157,5 @@ require("mini.surround").setup({
 
 vim.keymap.set("n", "<leader>go", require("mini.diff").toggle_overlay, { desc = "git overlay" })
 vim.keymap.set("n", "<leader>gr", require("mini.git").show_range_history, { desc = "git range history" })
-vim.keymap.set("n", "<leader>go", require("mini.git").show_diff_source, { desc = "git diff source" })
+vim.keymap.set("n", "<leader>gs", require("mini.git").show_diff_source, { desc = "git diff source" })
 vim.keymap.set("n", "<leader>gi", require("mini.git").show_at_cursor, { desc = "git show info at cursor" })

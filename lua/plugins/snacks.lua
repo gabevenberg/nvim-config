@@ -1,22 +1,74 @@
 -- snacks.nvim setup
+
+--- takes a snacks term and gives a string with its terminal number and the title if it is not the default.
+---@param buf? integer defaults to the current buffer
+---@return string
+function _G.snacks_term_label(buf)
+  buf = buf or 0
+  local term = vim.b[buf].snacks_terminal
+  local id = term and term.id or ""
+  local pos = term and term.env and term.env.snacks_pos
+  if pos then
+    id = id .. " " .. pos
+  end
+  local title = vim.b[buf].term_title or ""
+  -- neovims default term_title start with a term:// placeholder
+  if title == "" or title:find("^term://") then
+    return tostring(id)
+  else
+    return id .. ": " .. title
+  end
+end
+
 require("snacks").setup({
-  bufdelete = { enable = true },
-  dim = { enable = true },
-  git = { enable = true },
-  input = { enable = true },
-  notifier = { enable = true },
-  terminal = { enable = true },
-  toggle = { enable = true },
-  quickfile = { enable = true },
-  scope = { enable = true },
+  bufdelete = { enabled = true },
+  dim = { enabled = true },
+  git = { enabled = true },
+  input = { enabled = true },
+  notifier = { enabled = true },
+  terminal = {
+    enabled = true,
+    win = {
+      -- snacks only gives splits a winbar by default, floats get the id too
+      wo = { winbar = "%{v:lua.snacks_term_label()}" },
+    },
+  },
+  toggle = { enabled = true },
+  quickfile = { enabled = true },
+  scope = {
+    enabled = true,
+    keys = {
+      -- [i and ]i belong to mini.bracketed's indent jumps
+      jump = {
+        ["[i"] = false,
+        ["]i"] = false,
+        ["[e"] = {
+          min_size = 1,
+          bottom = false,
+          cursor = false,
+          edge = true,
+          treesitter = { blocks = { enabled = false } },
+          desc = "jump to top edge of scope",
+        },
+        ["]e"] = {
+          min_size = 1,
+          bottom = true,
+          cursor = false,
+          edge = true,
+          treesitter = { blocks = { enabled = false } },
+          desc = "jump to bottom edge of scope",
+        },
+      },
+    },
+  },
 
   statuscolumn = {
-    enable = true,
+    enabled = true,
     left = { "mark", "sign" }, -- priority of signs on the left (high to low)
     right = { "fold", "git" }, -- priority of signs on the right (high to low)
     folds = {
-      open = false, -- show open fold icons
-      git_hl = false, -- use Git Signs hl for fold icons
+      open = false,            -- show open fold icons
+      git_hl = false,          -- use Git Signs hl for fold icons
     },
     git = {
       -- patterns to match Git signs
@@ -35,7 +87,7 @@ require("snacks").setup({
     },
     previewers = {
       diff = {
-        builtin = true, -- use Neovim for previewing diffs (true) or use an external tool (false)
+        builtin = true,    -- use Neovim for previewing diffs (true) or use an external tool (false)
         cmd = { "delta" }, -- example to show a diff with delta
       },
       git = {
@@ -88,21 +140,34 @@ vim.keymap.set("n", "<leader>gl", Snacks.lazygit.open, { desc = "lazy[G]it [T]UI
 Snacks.toggle.dim():map("<leader>D")
 
 -- terminal keybinds
+-- snacks keys terminals on cmd, cwd, env and count, so a distinct env keeps the float and split terminals apart
 vim.keymap.set("n", "<leader>s", function()
-  Snacks.terminal.toggle(nil, { win = { position = "float" } })
+  Snacks.terminal.toggle(nil, { win = { position = "float" }, env = { snacks_pos = "float" } })
 end, { desc = "terminal" })
 vim.keymap.set("n", "<leader>S", function()
-  Snacks.terminal.toggle(nil, { win = { position = "bottom" } })
+  Snacks.terminal.toggle(nil, { win = { position = "bottom" }, env = { snacks_pos = "bottom" } })
 end, { desc = "terminal" })
-
--- double tap escape leaves terminal mode
-vim.keymap.set("t", "<esc>", function(self)
-  self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
-  if self.esc_timer:is_active() then
-    self.esc_timer:stop()
-    vim.cmd("stopinsert")
-  else
-    self.esc_timer:start(500, 0, function() end)
-    return "<esc>"
-  end
-end, { expr = true, desc = "Double tap to escape terminal" })
+-- Terminal picker
+vim.keymap.set("n", "<leader>fT", function()
+  local items = vim.tbl_map(function(term)
+    return {
+      text = snacks_term_label(term.buf),
+      id = vim.b[term.buf].snacks_terminal.id,
+      buf = term.buf,
+      term = term,
+    }
+  end, Snacks.terminal.list())
+  table.sort(items, function(a, b)
+    return a.id < b.id
+  end)
+  Snacks.picker.pick({
+    title = "Terminals",
+    items = items,
+    format = "text",
+    preview = "file",
+    confirm = function(picker, item)
+      picker:close()
+      item.term:show():focus()
+    end,
+  })
+end, { desc = "[T]erminals" })
