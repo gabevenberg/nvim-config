@@ -219,8 +219,8 @@ inputs: {
     lazy = true;
     data = null;
     runtimePkgs = with pkgs; [
-      taplo
-      jq
+      tombi
+      jaq
       yaml-language-server
     ];
   };

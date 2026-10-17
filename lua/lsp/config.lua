@@ -1,6 +1,6 @@
 return {
   {
-    "taplo",
+    "tombi",
     for_cat = "config",
     lsp = {},
   },
