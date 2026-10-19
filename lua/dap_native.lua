@@ -1,8 +1,10 @@
--- configurations for gdb's native DAP, shared by C, C++ and Rust.
+-- configurations for, gdb's own DAP or lldb-dap, for C, C++, and Rust.
 -- the adapters are set up in plugins/debug.lua and lsp/rust.lua.
 local M = {}
 
--- a function, so the picker opens when the configuration runs, not when nvim-dap loads
+-- "gdb" or "lldb", lldb on darwin since gdb cannot debug native programs on apple silicon.
+M.debugger = nixInfo("gdb", "settings", "debugger")
+
 local function pick_program()
   local program = require("dap.utils").pick_file({
     -- pick_file strips the prefix from its labels with a lua pattern,
@@ -16,10 +18,19 @@ local function pick_program()
   return type(program) == "string" and vim.fn.fnamemodify(program, ":p") or program
 end
 
--- adapter is "gdb", or "rust-gdb" for rust's pretty printers.
-function M.configurations(adapter)
-  adapter = adapter or "gdb"
-  return {
+local function pick_remote()
+  local target = vim.fn.input("gdbserver host:port: ", "localhost:")
+  if target == "" or target == "localhost:" then
+    return require("dap").ABORT
+  end
+  return target
+end
+
+-- adapter is "gdb", "rust-gdb", or "lldb".
+-- init_commands is a list or a function returning one
+function M.configurations(adapter, init_commands)
+  adapter = adapter or M.debugger
+  local configurations = {
     {
       type = adapter,
       request = "launch",
@@ -45,20 +56,37 @@ function M.configurations(adapter)
         return require("dap.utils").pick_process()
       end,
     },
-    {
+  }
+
+  if adapter == "lldb" then
+    table.insert(configurations, {
       type = adapter,
       request = "attach",
       name = "Attach to gdbserver (" .. adapter .. ")",
       program = pick_program,
-      target = function()
-        local target = vim.fn.input("gdbserver host:port: ", "localhost:")
-        if target == "" or target == "localhost:" then
-          return require("dap").ABORT
+      -- lldb-dap creates the target from program, then hands the connection to these
+      attachCommands = function()
+        local target = pick_remote()
+        if target == require("dap").ABORT then
+          return target
         end
-        return target
+        return { "gdb-remote " .. target }
       end,
-    },
-  }
+    })
+    for _, configuration in ipairs(configurations) do
+      configuration.initCommands = init_commands
+    end
+  else
+    table.insert(configurations, {
+      type = adapter,
+      request = "attach",
+      name = "Attach to gdbserver (" .. adapter .. ")",
+      program = pick_program,
+      target = pick_remote,
+    })
+  end
+
+  return configurations
 end
 
 return M

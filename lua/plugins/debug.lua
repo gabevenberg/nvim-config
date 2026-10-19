@@ -151,12 +151,19 @@ return {
       },
     },
     after = function()
-      -- rust uses the rust-gdb adapter from lsp/rust.lua instead
-      require("dap").adapters.gdb = {
-        type = "executable",
-        command = "gdb",
-        args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
-      }
+      if require("dap_native").debugger == "lldb" then
+        require("dap").adapters.lldb = {
+          type = "executable",
+          command = "lldb-dap",
+          name = "lldb",
+        }
+      else
+        require("dap").adapters.gdb = {
+          type = "executable",
+          command = "gdb",
+          args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
+        }
+      end
     end,
   },
   {

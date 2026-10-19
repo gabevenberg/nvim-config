@@ -1,20 +1,39 @@
+-- load rust's pretty printers from the toolchain on PATH for lldb.
+-- rustaceanvim does the same for its own debuggables.
+local function rust_lldb_commands()
+  local sysroot = vim.trim(vim.fn.system({ "rustc", "--print", "sysroot" }))
+  local etc = vim.fs.joinpath(sysroot, "lib", "rustlib", "etc")
+  if vim.v.shell_error ~= 0 or not vim.uv.fs_stat(vim.fs.joinpath(etc, "lldb_lookup.py")) then
+    return {}
+  end
+  return {
+    ('command script import "%s"'):format(vim.fs.joinpath(etc, "lldb_lookup.py")),
+    ('command source -s 0 "%s"'):format(vim.fs.joinpath(etc, "lldb_commands")),
+  }
+end
+
 return {
   {
     "rustaceanvim",
     for_cat = "rust",
     before = function()
       if nixInfo(false, "settings", "cats", "debug") then
-        vim.g.rustaceanvim = {
-          dap = {
-            -- autoload runs cargo build for every target on each rust-analyzer attach, ;dL runs it on demand
-            autoload_configurations = false,
-            -- only has to be set for rustaceanvim to start, sessions run through dap.adapters["rust-gdb"]
+        local dap_config
+        if require("dap_native").debugger == "lldb" then
+          dap_config = {
+            adapter = { type = "executable", command = "lldb-dap", name = "lldb" },
+            configuration = { type = "lldb", name = "Rust debug (lldb)", request = "launch" },
+          }
+        else
+          dap_config = {
             adapter = { type = "executable", command = "rust-gdb" },
             configuration = { type = "rust-gdb", name = "Rust debug (rust-gdb)", request = "launch" },
-            -- sends env as a list of KEY=VALUE strings, which gdb rejects, it wants a map
             add_dynamic_library_paths = false,
-          },
-        }
+          }
+        end
+        -- autoload runs cargo build for every target on each rust-analyzer attach, ;dL runs it on demand
+        dap_config.autoload_configurations = false
+        vim.g.rustaceanvim = { dap = dap_config }
       end
     end,
   },
@@ -41,13 +60,16 @@ return {
     },
     after = function()
       local dap = require("dap")
-      -- rust-gdb adds rust's pretty printers, then runs gdb from PATH
-      dap.adapters["rust-gdb"] = {
-        type = "executable",
-        command = "rust-gdb",
-        args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
-      }
-      dap.configurations.rust = require("dap_gdb").configurations("rust-gdb")
+      if require("dap_native").debugger == "lldb" then
+        dap.configurations.rust = require("dap_native").configurations("lldb", rust_lldb_commands)
+      else
+        dap.adapters["rust-gdb"] = {
+          type = "executable",
+          command = "rust-gdb",
+          args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
+        }
+        dap.configurations.rust = require("dap_native").configurations("rust-gdb")
+      end
 
       dap.adapters["probe-rs-debug"] = {
         type = "server",
@@ -55,7 +77,6 @@ return {
         executable = { command = "probe-rs", args = { "dap-server", "--port", "${port}" } },
       }
       dap.listeners.before["event_probe-rs-rtt-channel-config"]["dap-rust"] = function(session, body)
-        -- probe-rs only sends RTT data for channels the client says are open
         session:request("rttWindowOpened", { body.channelNumber, true })
       end
       dap.listeners.before["event_probe-rs-rtt-data"]["dap-rust"] = function(_, body)

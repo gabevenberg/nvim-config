@@ -4,7 +4,12 @@ inputs: {
   lib,
   pkgs,
   ...
-}: {
+}: let
+  nativeDebugger =
+    if config.settings.debugger == "lldb"
+    then pkgs.lldb
+    else pkgs.gdb;
+in {
   imports = [wlib.wrapperModules.neovim];
   # NOTE: see the tips and tricks section or the bottom of this file + flake inputs to understand this value
   options.nvim-lib.neovimPlugins = lib.mkOption {
@@ -43,6 +48,15 @@ inputs: {
   options.settings.minimal = lib.mkOption {
     type = lib.types.bool;
     default = false;
+  };
+  # gdb builds on darwin, but cannot debug native programs on apple silicon.
+  options.settings.debugger = lib.mkOption {
+    type = lib.types.enum ["gdb" "lldb"];
+    default =
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then "lldb"
+      else "gdb";
+    description = "native debugger for C, C++ and rust";
   };
   config.settings.colorscheme = "gruvbox"; # <- just demonstrating that it is an option
   # and grab it in lua with `require(vim.g.nix_info_plugin_name)("onedark", "settings", "colorscheme") == "moonfly"`
@@ -306,7 +320,7 @@ inputs: {
         # both, because an enabled child is installed even when its parent spec is disabled
         enable = config.specs.debug.enable && config.specs.rust.enable;
         # the embedded debug server comes from the project's devshell
-        runtimePkgs = [pkgs.gdb];
+        runtimePkgs = [nativeDebugger];
       }
     ];
     runtimePkgs = with pkgs; [
@@ -347,7 +361,7 @@ inputs: {
         data = nvim-dap-disasm;
         # both, because an enabled child is installed even when its parent spec is disabled
         enable = config.specs.debug.enable && config.specs.C.enable;
-        runtimePkgs = [pkgs.gdb];
+        runtimePkgs = [nativeDebugger];
       }
     ];
     runtimePkgs = with pkgs; [
