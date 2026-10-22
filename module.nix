@@ -58,7 +58,7 @@ in {
       else "gdb";
     description = "native debugger for C, C++ and rust";
   };
-  config.settings.colorscheme = "gruvbox"; # <- just demonstrating that it is an option
+  config.settings.colorscheme = lib.mkDefault "gruvbox";
   # and grab it in lua with `require(vim.g.nix_info_plugin_name)("onedark", "settings", "colorscheme") == "moonfly"`
   config.specs.colorscheme = {
     enable = lib.mkIf config.settings.minimal (lib.mkDefault true);
@@ -73,6 +73,8 @@ in {
         "tokyonight" = tokyonight-nvim;
         "nord" = nord-nvim;
         "gruvbox" = gruvbox-nvim;
+        # mini.base16 applies the palette, gruvbox is the fallback until noctalia has rendered one
+        "noctalia" = gruvbox-nvim;
       }
     );
   };

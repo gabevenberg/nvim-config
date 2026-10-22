@@ -1,6 +1,10 @@
 local colorschemeName = nixInfo("retrobox", "settings", "colorscheme")
 
-vim.cmd.colorscheme(colorschemeName)
+if colorschemeName == "noctalia" then
+  require("plugins.noctalia")
+else
+  vim.cmd.colorscheme(colorschemeName)
+end
 
 require("plugins.lualine")
 require("plugins.oil")
